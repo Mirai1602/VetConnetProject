@@ -1,0 +1,150 @@
+   <div class="MensajeBienvenida">
+    <h3>
+        Bienvenido a VetConnect, tu plataforma de gestión veterinaria.
+    </h3>
+   
+
+   </div> 
+   <main class="container" id="perfiles">
+    <section class="cards">
+        
+        <article class="card">
+            <h2>Veterinario</h2>
+            <div class="card-img-container">
+                <img src="Veterinario.jpg" alt="Veterinario">
+            </div>
+            <p class="card-text">Accede al perfil de veterinarios.</p>
+            <button class="btn-perfil">Veterinario</button>
+        </article>
+
+        <article class="card">
+            <h2>Pacientes</h2>
+            <div class="card-img-container">
+                <img src="Pacientes.jpg" alt="Pacientes">
+            </div>
+            <p class="card-text">Accede al perfil de pacientes</p>
+            <button class="btn-perfil">Paciente</button>
+        </article>
+
+    </section>
+</main>
+        </section>
+    </main>
+    <style>
+
+   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Georama:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap');
+
+
+  
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        background-color: #ffffff; /* Dejado en blanco común */
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 36px;
+        color: #000;
+    }
+
+    h3 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #555;
+    }
+
+    /* ==========================================================================
+       ESTRUCTURA DE TARJETAS LADO A LADO
+       ========================================================================== */
+    .cards {
+        display: flex;
+        flex-direction: row;       
+        justify-content: center;   
+        align-items: center;
+        gap: 40px;                 
+        width: 100%;
+    }
+
+    .card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        padding: 24px;
+        width: 280px;              
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card h2 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: #333;
+        margin: 0 0 16px 0;
+    }
+
+    /* ==========================================================================
+       CONTENEDOR FIJO PARA QUE APAREZCAN TUS IMÁGENES
+       ========================================================================== */
+    .card-img-container {
+        width: 100%;
+        height: 180px;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+
+    .card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Hace que tus fotos se encuadren perfectamente */
+        display: block;
+    }
+
+    .card p {
+        font-family: 'Comfortaa', sans-serif; 
+        font-weight: 400;   
+        font-size: 14px;   
+        color: #666;
+        margin: 0 0 20px 0;
+        min-height: 40px;
+    }
+
+    /* Tu botón azul original intacto */
+    .card button {
+        background: #2720FF;
+        color: #fff;
+        border: none;
+        padding: 12px 28px; 
+        border-radius: 50px;       
+        cursor: pointer;
+        font-family: 'Georama', sans-serif !important;
+        font-weight: 500;
+        font-size: 16px;
+        transition: background 0.2s ease, transform 0.1s ease;
+        width: 85%;
+    }
+
+    .card button:hover {
+        background: #1c17c7;
+        transform: translateY(-1px);
+    }
+</style>
