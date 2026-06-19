@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="portal.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
     <title>VetConnect - Panel de Citas</title>
 </head>
@@ -29,452 +28,575 @@
                 <h1>Panel de Control de Citas</h1>
                 <p>Gestiona los horarios, pacientes y estados de tus consultas médicas.</p>
             </div>
-            <button class="btn-nueva-cita">+ Nueva Citas</button>
+            <button class="btn-nueva-cita" onclick="abrirModal()">+ Nueva Cita</button>
         </header>
-       // buscador de pacientes utilizando  filtrarTablaCita 
-        <input 
-            type="text" 
-            id="buscador-citas" 
-            placeholder=" Buscar por paciente, dueño o motivo de consulta..."
-            onkeyup="filtrarTablaCitas()"
-        >
-    </div>
 
         <div class="portal-content">
             
             <section class="excel-section">
+                <div class="search-container">
+                    <div class="search-box-wrapper">
+                        <input 
+                            type="text" 
+                            id="buscador-citas" 
+                            placeholder="Buscar por paciente, dueño o motivo de consulta..."
+                            onkeyup="filtrarTablaCitas()"
+                        >
+                    </div>
+                </div>
+
                 <div class="table-responsive">
-                  <table class="excel-table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Paciente / Mascota</th>
-            <th>Dueño</th>
-            <th>Motivo de Consulta</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody id="tabla-citas-body">
-        <tr class="sin-datos-row">
-            <td colspan="8" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
-                No hay citas registradas en este momento. Las nuevas citas aparecerán aquí.
-            </td>
-        </tr>
-    </tbody>
-</table>
+                    <table class="excel-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Paciente / Mascota</th>
+                                <th>Dueño</th>
+                                <th>Motivo de Consulta</th>
+                                <th>Estado (Toca para cambiar)</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-citas-body">
+                            <tr class="sin-datos-row">
+                                <td colspan="8" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
+                                    No hay citas registradas en este momento. Las nuevas citas aparecerán aquí dinámicamente.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
             <aside class="sidebar-section">
-    <div class="filter-card">
-        <h3>Resumen de Estados</h3>
-        <p class="filter-desc">Filtra o revisa las consultas delimitadas por su progreso actual.</p>
-        
-        <div class="status-box box-pendientes">
-    <div class="status-info">
-        <span class="status-title">Citas Pendientes</span>
-        <span class="status-count" id="contador-pendientes">0</span>
-    </div>
-    <div class="status-indicator indicator-pendiente"></div>
-</div>
+                <div class="filter-card">
+                    <h3>Resumen de Estados</h3>
+                    <p class="filter-desc">Filtra o revisa las consultas delimitadas por su progreso actual.</p>
+                    
+                    <div class="status-box box-pendientes">
+                        <div class="status-info">
+                            <span class="status-title">Citas Pendientes</span>
+                            <span class="status-count" id="contador-pendientes">0</span>
+                        </div>
+                        <div class="status-indicator indicator-pendiente"></div>
+                    </div>
 
-<div class="status-box box-hechas">
-    <div class="status-info">
-        <span class="status-title">Citas Hechas</span>
-        <span class="status-count" id="contador-hechas">0</span>
-    </div>
-    <div class="status-indicator indicator-hecha"></div>
-</div>
+                    <div class="status-box box-hechas">
+                        <div class="status-info">
+                            <span class="status-title">Citas Hechas</span>
+                            <span class="status-count" id="contador-hechas">0</span>
+                        </div>
+                        <div class="status-indicator indicator-hecha"></div>
+                    </div>
 
-        <div class="select-container">
-            <label for="filtro-citas" class="select-label">Filtrar por:</label>
-            <select id="filtro-citas" class="mini-barra-select">
-                <option value="todas">Ver Todas</option>
-                <option value="pendientes">Solo Pendientes</option>
-                <option value="hechas">Solo Hechas</option>
-            </select>
+                    <div class="select-container">
+                        <label for="filtro-citas" class="select-label">Filtrar por:</label>
+                        <select id="filtro-citas" class="mini-barra-select" onchange="filtrarPorEstado()">
+                            <option value="todas">Ver Todas</option>
+                            <option value="Pendiente">Solo Pendientes</option>
+                            <option value="Hecha">Solo Hechas</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+
         </div>
-        
-    </div>
-</aside>
 
-<div id="modalCita" class="modal-overlay">
-        <div class="modal-content-box">
-            <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
-            <h2>Registrar Nueva Cita</h2>
-            <p class="modal-subtitle">Por favor rellene el formulario basado en el índice de la tabla:</p>
-            
-            <form id="form-nueva-cita" onsubmit="agregarCitaManual(event)">
-                <div class="form-list-group">
-                    <label>1. Fecha de Consulta</label>
-                    <input type="date" id="input-fecha" required>
-                </div>
+        <div id="modalCita" class="modal-overlay">
+            <div class="modal-content-box">
+                <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
+                <h2>Registrar Nueva Cita</h2>
+                <p class="modal-subtitle">Por favor rellene el formulario basado en el índice de la tabla:</p>
                 
-                <div class="form-list-group">
-                    <label>2. Hora de Cita</label>
-                    <input type="time" id="input-hora" required>
-                </div>
-                
-                <div class="form-list-group">
-                    <label>3. Paciente / Mascota</label>
-                    <input type="text" id="input-mascota" placeholder="Ej. Lucas (Golden Retriever)" required>
-                </div>
-                
-                <div class="form-list-group">
-                    <label>4. Nombre del Dueño</label>
-                    <input type="text" id="input-dueno" placeholder="Ej. Carlos Mendoza" required>
-                </div>
-                
-                <div class="form-list-group">
-                    <label>5. Motivo de Consulta</label>
-                    <input type="text" id="input-motivo" placeholder="Ej. Vacunación Anual o Limpieza" required>
-                </div>
-                
-                <div class="form-list-group">
-                    <label>6. Estado Inicial</label>
-                    <select id="input-estado">
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Hecha">Hecha</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn-guardar-cita">Añadir a la Tabla</button>
-            </form>
+                <form id="form-nueva-cita" onsubmit="agregarCitaManual(event)">
+                    <div class="form-list-group">
+                        <label>1. Fecha de Consulta</label>
+                        <input type="date" id="input-fecha" required>
+                    </div>
+                    
+                    <div class="form-list-group">
+                        <label>2. Hora de Cita</label>
+                        <input type="time" id="input-hora" required>
+                    </div>
+                    
+                    <div class="form-list-group">
+                        <label>3. Paciente / Mascota</label>
+                        <input type="text" id="input-mascota" placeholder="Ej. Lucas (Golden Retriever)" required>
+                    </div>
+                    
+                    <div class="form-list-group">
+                        <label>4. Nombre del Dueño</label>
+                        <input type="text" id="input-dueno" placeholder="Ej. Carlos Mendoza" required>
+                    </div>
+                    
+                    <div class="form-list-group">
+                        <label>5. Motivo de Consulta</label>
+                        <input type="text" id="input-motivo" placeholder="Ej. Vacunación Anual o Limpieza" required>
+                    </div>
+                    
+                    <div class="form-list-group">
+                        <label>6. Estado Inicial</label>
+                        <select id="input-estado">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Hecha">Hecha</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-guardar-cita">Añadir a la Tabla</button>
+                </form>
+            </div>
         </div>
-    </div>
 
+        <div id="modalConfirmarEliminar" class="modal-overlay">
+            <div class="modal-confirm-box">
+                <div class="confirm-icon">⚠️</div>
+                <h2>¿Eliminar este registro?</h2>
+                <p>Esta acción removerá permanentemente la cita médica del listado actual de consultas.</p>
+                <div class="confirm-actions">
+                    <button class="btn-confirm-cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
+                    <button class="btn-confirm-aceptar" id="btn-aceptar-eliminar">Eliminar Cita</button>
+                </div>
+            </div>
+        </div>
 
-</body>
-<style> 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+    </main>
 
-body {
-    font-family: 'Nunito', sans-serif;
-    background-color: #f4f6f9; /* Gris ultra claro para que el cuadro blanco resalte */
-    color: #333;
-}
+    <style> 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.navbar {
-    background: #ffffff;
-    padding: 14px 40px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-}
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f6f9; 
+            color: #333;
+        }
 
-.nav-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1400px;
-    margin: 0 auto;
-}
+        .navbar {
+            background: #ffffff;
+            padding: 14px 40px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
 
-.nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 900;
-    font-size: 20px;
-}
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-.nav-icon {
-    border: 2px solid #333;
-    padding: 2px 10px;
-    border-radius: 6px;
-    font-size: 18px;
-}
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            font-size: 20px;
+        }
 
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
+        .nav-icon {
+            border: 2px solid #333;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 18px;
+        }
 
-.nav-link {
-    text-decoration: none;
-    color: #666;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
 
-.nav-link.active, .nav-link:hover {
-    color: #2720FF;
-    background: rgba(39, 32, 255, 0.05);
-}
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
 
+        .nav-link.active {
+            color: #2720FF;
+            background: rgba(39, 32, 255, 0.08);
+        }
 
-.portal-container {
-    max-width: 1400px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
+        .portal-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-.portal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
+        .portal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
 
-.portal-header h1 {
-    font-weight: 900;
-    font-size: 28px;
-    margin-bottom: 5px;
-}
+        .portal-header h1 {
+            font-weight: 900;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
 
-.portal-header p {
-    color: #666;
-    font-size: 15px;
-}
+        .portal-header p {
+            color: #666;
+            font-size: 15px;
+        }
 
-.btn-nueva-cita {
-    background: #2720FF; 
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-}
+        .btn-nueva-cita {
+            background: #2720FF; 
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            transition: background 0.2s;
+        }
 
-.btn-nueva-cita:hover {
-    background: #1c17c7;
-}
+        .btn-nueva-cita:hover {
+            background: #1c17c7;
+        }
 
-/* Distribución del contenido: Cuadro Excel + Sección Delimitadora */
-.portal-content {
-    display: grid;
-    grid-template-columns: 1fr 320px; /* Divide la tabla y la tarjeta de la esquina */
-    gap: 30px;
-    align-items: start;
-}
+        .portal-content {
+            display: grid;
+            grid-template-columns: 1fr 320px; 
+            gap: 30px;
+            align-items: start;
+        }
 
+        .excel-section {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); 
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
 
-.excel-section {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); /* Sombra marcada elegante */
-    overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.04);
-}
+        .search-container {
+            padding: 24px 24px 14px 24px; 
+            background-color: #ffffff;
+        }
 
-.table-responsive {
-    overflow-x: auto;
-}
+        .search-box-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 420px; 
+        }
 
-.excel-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 14px;
-}
+        .search-box-wrapper::before {
+            content: "🔍";
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #a0aec0;
+            pointer-events: none;
+        }
 
-/* Cabeceras tipo Excel pero modernas */
-.excel-table th {
-    background-color: #f8f9fa;
-    color: #444;
-    font-weight: 700;
-    padding: 16px;
-    border-bottom: 2px solid #edf2f7;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-}
+        #buscador-citas {
+            width: 100%;
+            padding: 12px 16px 12px 46px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            background-color: #f8f9fa; 
+            border: 2px solid #edf2f7;
+            border-radius: 50px; 
+            outline: none;
+            transition: all 0.2s ease;
+        }
 
-/* Estado de citas  */
+        #buscador-citas:focus {
+            background-color: #ffffff;
+            border-color: #2720FF; 
+            box-shadow: 0 4px 12px rgba(39, 32, 255, 0.06);
+        }
 
-.btn-cambiar-estado {
-    background-color: #f8f9fa;
-    color: #2720FF; /* Tu azul */
-    border: 1px solid rgba(39, 32, 255, 0.2);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
+        .table-responsive {
+            overflow-x: auto;
+        }
 
-.btn-cambiar-estado:hover {
-    background-color: #2720FF;
-    color: #ffffff;
-    border-color: #2720FF;
-}
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
 
-/* Celdas del cuerpo */
-.excel-table td {
-    padding: 16px;
-    border-bottom: 1px solid #edf2f7;
-    color: #555;
-    background-color: #ffffff;
-}
+        .excel-table th {
+            background-color: #f8f9fa;
+            color: #444;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid #edf2f7;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
 
+        .excel-table td {
+            padding: 16px;
+            border-bottom: 1px solid #edf2f7;
+            color: #555;
+            background-color: #ffffff;
+            vertical-align: middle;
+        }
 
-.excel-table tbody tr:hover td {
-    background-color: #fcfcff;
-}
+        .actions-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
+        .btn-editar-fila, .btn-eliminar-fila {
+            background-color: #f8f9fa;
+            border: 1px solid #edf2f7;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
 
-.badge {
-    padding: 6px 12px;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 12px;
-    display: inline-block;
-}
+        .btn-editar-fila { color: #2720FF; border-color: rgba(39, 32, 255, 0.2); }
+        .btn-editar-fila:hover { background-color: #2720FF; color: white; }
 
-.badge-pendiente {
-    background-color: #fff8e1;
-    color: #f5b041; /* Amarillo/Naranja sutil */
-}
+        .btn-eliminar-fila { color: #e63946; border-color: rgba(230, 57, 70, 0.2); }
+        .btn-eliminar-fila:hover { background-color: #e63946; color: white; }
 
-.badge-hecha {
-    background-color: #e8f8f5;
-    color: #2ec4b6; /* Verde azulado limpio */
-}
+        .table-inline-input {
+            width: 100%;
+            padding: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            border: 2px solid #2720FF;
+            border-radius: 6px;
+            outline: none;
+        }
 
+        /* BADGES REDISEÑADOS COMO BOTONES INTERACTIVOS LIMPIOS */
+        .badge {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-block;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+            min-width: 100px;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+        }
+        
+        .badge:active {
+            transform: scale(0.95);
+        }
 
-.filter-card {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    padding: 24px;
-    border: 1px solid rgba(0, 0, 0, 0.04);
-}
+        .badge-pendiente { 
+            background-color: #fff8e1; 
+            color: #f5b041; 
+            border: 1px solid rgba(245, 176, 65, 0.3);
+        }
+        .badge-pendiente:hover {
+            background-color: #f5b041;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(245, 176, 65, 0.2);
+        }
 
-.filter-card h3 {
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 8px;
-}
+        .badge-hecha { 
+            background-color: #e8f8f5; 
+            color: #2ec4b6; 
+            border: 1px solid rgba(46, 196, 182, 0.3);
+        }
+        .badge-hecha:hover {
+            background-color: #2ec4b6;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(46, 196, 182, 0.2);
+        }
 
-.filter-desc {
-    font-size: 13px;
-    color: #777;
-    margin-bottom: 20px;
-    line-height: 1.4;
-}
+        .filter-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            padding: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
 
-/* Cuadros delimitadores de estadísticas */
-.status-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    background: #f8f9fa;
-    border: 1px solid #edf2f7;
-}
+        .filter-card h3 { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+        .filter-desc { font-size: 13px; color: #777; margin-bottom: 20px; line-height: 1.4; }
 
-.status-info {
-    display: flex;
-    flex-direction: column;
-}
+        .status-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            border: 1px solid #edf2f7;
+        }
 
-.status-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #666;
-}
+        .status-info { display: flex; flex-direction: column; }
+        .status-title { font-size: 13px; font-weight: 600; color: #666; }
+        .status-count { font-size: 24px; font-weight: 900; color: #111; margin-top: 2px; }
+        .status-indicator { width: 6px; height: 35px; border-radius: 10px; }
+        
+        .indicator-pendiente { background-color: #f5b041; }
+        .indicator-hecha { background-color: #2ec4b6; }
 
-.status-count {
-    font-size: 22px;
-    font-weight: 900;
-    color: #111;
-    margin-top: 2px;
-}
+        .select-container { display: flex; flex-direction: column; gap: 6px; margin-top: 20px; }
+        .select-label { font-size: 12px; font-weight: 700; color: #777; text-transform: uppercase; }
 
-/* Pequeñas barras indicadoras de color */
-.status-indicator {
-    width: 6px;
-    height: 35px;
-    border-radius: 10px;
-}
+        .mini-barra-select {
+            width: 100%;
+            padding: 10px 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            background-color: #ffffff;
+            border: 2px solid #edf2f7;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+        }
 
-.indicator-pendiente { background-color: #f5b041; }
-.indicator-hecha { background-color: #2ec4b6; }
+        /* MODALES */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); 
+            z-index: 1000;
+            align-items: center; justify-content: center;
+        }
 
-/* Botones de acción del filtro */
-.select-container {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 20px;
-}
+        .modal-content-box {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%; max-width: 480px;
+            position: relative;
+        }
 
-.select-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #777;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+        .modal-confirm-box {
+            background-color: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: aparecerModal 0.2s ease-out;
+        }
 
-.mini-barra-select {
-    width: 100%;
-    padding: 10px 12px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-    background-color: #ffffff;
-    border: 2px solid #edf2f7;
-    border-radius: 8px;
-    cursor: pointer;
-    outline: none;
- 
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+        @keyframes aparecerModal {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
 
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232720FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-    padding-right: 35px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
+        .confirm-icon { font-size: 36px; margin-bottom: 14px; }
+        .modal-confirm-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 10px; color: #111; }
+        .modal-confirm-box p { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 24px; }
 
-/* Efecto focus al abrir el menú */
-.mini-barra-select:focus {
-    border-color: #2720FF; /* Tu azul brillante */
-    box-shadow: 0 0 0 3px rgba(39, 32, 255, 0.1);
-}
+        .confirm-actions { display: flex; gap: 12px; justify-content: center; }
 
-.mini-barra-select.active {
-    background-color: #2720FF;
-    color: white;
-    border-color: #2720FF;
-    /* Cambia la flechita a blanca para que no se pierda con el fondo azul */
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
-}
+        .btn-confirm-cancelar, .btn-confirm-aceptar {
+            padding: 10px 20px; font-family: 'Nunito', sans-serif;
+            font-size: 14px; font-weight: 700; border: none;
+            border-radius: 8px; cursor: pointer; flex: 1; transition: background 0.2s;
+        }
 
-/* porra */
-@media (max-width: 992px) {
-    .portal-content {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-/* contador de citas autonomo */
-</main>
+        .btn-confirm-cancelar { background-color: #edf2f7; color: #4a5568; }
+        .btn-confirm-cancelar:hover { background-color: #e2e8f0; }
+
+        .btn-confirm-aceptar { background-color: #e63946; color: white; }
+        .btn-confirm-aceptar:hover { background-color: #c92a36; }
+
+        .btn-cerrar-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: #aaa; }
+        .form-list-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-list-group label { font-size: 13px; font-weight: 700; color: #444; }
+        
+        .form-list-group input, .form-list-group select {
+            padding: 10px 12px; font-family: 'Nunito', sans-serif;
+            font-size: 14px; border: 2px solid #edf2f7; border-radius: 8px; outline: none;
+        }
+
+        .btn-guardar-cita {
+            width: 100%; background: #2720FF; color: white; border: none;
+            padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        @media (max-width: 992px) {
+            .portal-content { grid-template-columns: 1fr; }
+        }
+    </style>
 
     <script>
+        let proximoId = 1; 
+        let filaPorEliminar = null; 
+
+        function abrirModal() {
+            document.getElementById('modalCita').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalCita').style.display = 'none';
+        }
+
+        function abrirModalEliminar(boton) {
+            filaPorEliminar = boton.closest('tr'); 
+            document.getElementById('modalConfirmarEliminar').style.display = 'flex';
+        }
+
+        function cerrarModalEliminar() {
+            document.getElementById('modalConfirmarEliminar').style.display = 'none';
+            filaPorEliminar = null;
+        }
+
+        function formatearHora12(horaRaw) {
+            if (!horaRaw) return "";
+            if (horaRaw.includes('AM') || horaRaw.includes('PM')) return horaRaw;
+            
+            const partesHora = horaRaw.split(':');
+            let horas = parseInt(partesHora[0], 10);
+            const minutos = partesHora[1];
+            const ampm = horas >= 12 ? 'PM' : 'AM';
+            
+            horas = horas % 12;
+            horas = horas ? horas : 12; 
+            return `${horas.toString().padStart(2, '0')}:${minutos} ${ampm}`;
+        }
+
+        function verificarTablaVacia() {
+            const tablaBody = document.getElementById('tabla-citas-body');
+            const filas = tablaBody.querySelectorAll('tr:not(.sin-datos-row)');
+            
+            if (filas.length === 0) {
+                tablaBody.innerHTML = `
+                    <tr class="sin-datos-row">
+                        <td colspan="8" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
+                            No hay citas registradas en este momento. Las nuevas citas aparecerán aquí dinámicamente.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
         function actualizarContadoresCitas() {
             const tablaBody = document.getElementById('tabla-citas-body');
-            
             if (!tablaBody || tablaBody.querySelector('.sin-datos-row')) {
                 document.getElementById('contador-pendientes').textContent = '0';
                 document.getElementById('contador-hechas').textContent = '0';
@@ -486,12 +608,11 @@ body {
             let hechas = 0;
 
             filas.forEach(fila => {
-                const textoEstado = fila.textContent.toLowerCase();
-                
-                if (textoEstado.includes('pendiente')) {
-                    pendientes++;
-                } else if (textoEstado.includes('hecha')) {
-                    hechas++;
+                const badge = fila.querySelector('.badge');
+                if (badge) {
+                    const texto = badge.textContent.trim().toLowerCase();
+                    if (texto === 'pendiente') pendientes++;
+                    if (texto === 'hecha') hechas++;
                 }
             });
 
@@ -499,77 +620,157 @@ body {
             document.getElementById('contador-hechas').textContent = hechas;
         }
 
-        document.addEventListener('DOMContentLoaded', actualizarContadoresCitas);
-
+        // FUNCIÓN CLAVE: INTERCAMBIA EL ESTADO DIRECTAMENTE AL CLICKEAR EL BADGE
+        function alternarEstadoDirecto(badgeElement) {
+            const estadoActual = badgeElement.textContent.trim();
+            
+            if (estadoActual === 'Pendiente') {
+                badgeElement.textContent = 'Hecha';
+                badgeElement.className = 'badge badge-hecha';
+            } else {
+                badgeElement.textContent = 'Pendiente';
+                badgeElement.className = 'badge badge-pendiente';
+            }
+            
+            actualizarContadoresCitas();
+            
+            // Si hay un filtro de estado activo en el panel lateral, re-aplicar filtro inmediatamente
+            filtrarPorEstado();
+        }
 
         function agregarCitaManual(event) {
-    event.preventDefault(); 
+            event.preventDefault(); 
 
-    const tablaBody = document.getElementById('tabla-citas-body');
-    const filaSinDatos = tablaBody.querySelector('.sin-datos-row');
-    if (filaSinDatos) {
-        filaSinDatos.remove();
-    }
+            const tablaBody = document.getElementById('tabla-citas-body');
+            const filaSinDatos = tablaBody.querySelector('.sin-datos-row');
+            if (filaSinDatos) filaSinDatos.remove();
 
-    const fecha = document.getElementById('input-fecha').value;
-    const hora = document.getElementById('input-hora').value;
-    const mascota = document.getElementById('input-mascota').value;
-    const dueno = document.getElementById('input-dueno').value;
-    const motivo = document.getElementById('input-motivo').value;
-    const estado = document.getElementById('input-estado').value;
+            const fecha = document.getElementById('input-fecha').value;
+            const horaRaw = document.getElementById('input-hora').value; 
+            const mascota = document.getElementById('input-mascota').value;
+            const dueno = document.getElementById('input-dueno').value;
+            const motivo = document.getElementById('input-motivo').value;
+            const estado = document.getElementById('input-estado').value;
 
-    const fechaFormateada = fecha.split('-').reverse().join('/');
-    const claseBadge = estado === 'Pendiente' ? 'badge-pendiente' : 'badge-hecha';
+            const horaFormateada = formatearHora12(horaRaw);
+            const fechaFormateada = fecha.split('-').reverse().join('/');
+            const claseBadge = estado === 'Pendiente' ? 'badge-pendiente' : 'badge-hecha';
 
-    const nuevaFila = document.createElement('tr');
-    // Generamos las celdas incluyendo el botón con un evento onclick que apunta a sí mismo
-    nuevaFila.innerHTML = `
-        <td>#${proximoId}</td>
-        <td>${fechaFormateada}</td>
-        <td>${hora}</td>
-        <td>${mascota}</td>
-        <td>${dueno}</td>
-        <td>${motivo}</td>
-        <td class="celda-estado"><span class="badge ${claseBadge}">${estado}</span></td>
-        <td>
-            <button class="btn-cambiar-estado" onclick="alternarEstadoCita(this)">✔️ Completar</button>
-        </td>
-    `;
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.innerHTML = `
+                <td>#${proximoId}</td>
+                <td class="edit-fecha">${fechaFormateada}</td>
+                <td class="edit-hora">${horaFormateada}</td>
+                <td class="edit-mascota">${mascota}</td>
+                <td class="edit-dueno">${dueno}</td>
+                <td class="edit-motivo">${motivo}</td>
+                <td class="celda-estado">
+                    <span class="badge ${claseBadge}" onclick="alternarEstadoDirecto(this)">${estado}</span>
+                </td>
+                <td>
+                    <div class="actions-wrapper">
+                        <button class="btn-editar-fila" onclick="editarFila(this)">✏️ Editar</button>
+                        <button class="btn-eliminar-fila" onclick="abrirModalEliminar(this)">❌ Eliminar</button>
+                    </div>
+                </td>
+            `;
 
-    tablaBody.appendChild(nuevaFila);
-    proximoId++;
+            tablaBody.appendChild(nuevaFila);
+            proximoId++;
 
-    cerrarModal();
-    actualizarContadoresCitas();
-}
+            cerrarModal(); 
+            actualizarContadoresCitas();
+            document.getElementById('form-nueva-cita').reset(); 
+        }
 
-//  Cambia el estado de la fila en tiempo real
-function alternarEstadoCita(boton) {
-    // Buscamos la fila exacta (tr) donde se hizo clic
-    const fila = boton.closest('tr');
-    const celdaEstado = fila.querySelector('.celda-estado');
-    const badge = celdaEstado.querySelector('.badge');
-    
-    // Obtenemos el estado actual
-    const estadoActual = badge.textContent.trim();
+        function editarFila(boton) {
+            const fila = boton.closest('tr');
+            if (boton.textContent.includes('Guardar')) return;
 
-    if (estadoActual === 'Pendiente') {
-        // Lo cambiamos a Hecha y actualizamos los estilos de tu paleta
-        badge.textContent = 'Hecha';
-        badge.className = 'badge badge-hecha';
-        boton.style.opacity = "0.5"; // Opacamos el botón indicando que ya terminó
-    } else {
-        // Si vuelven a hacer clic, regresa a Pendiente (por si se equivocan)
-        badge.textContent = 'Pendiente';
-        badge.className = 'badge badge-pendiente';
-        boton.style.opacity = "1";
-    }
+            const celdaFecha = fila.querySelector('.edit-fecha');
+            const celdaHora = fila.querySelector('.edit-hora');
+            const celdaMascota = fila.querySelector('.edit-mascota');
+            const celdaDueno = fila.querySelector('.edit-dueno');
+            const celdaMotivo = fila.querySelector('.edit-motivo');
 
-    // Refrescamos los contadores de la esquina automáticamente con el nuevo cambio
-    actualizarContadoresCitas();
-}
+            celdaFecha.innerHTML = `<input type="text" class="table-inline-input" value="${celdaFecha.textContent.trim()}">`;
+            celdaHora.innerHTML = `<input type="text" class="table-inline-input" value="${celdaHora.textContent.trim()}">`;
+            celdaMascota.innerHTML = `<input type="text" class="table-inline-input" value="${celdaMascota.textContent.trim()}">`;
+            celdaDueno.innerHTML = `<input type="text" class="table-inline-input" value="${celdaDueno.textContent.trim()}">`;
+            celdaMotivo.innerHTML = `<input type="text" class="table-inline-input" value="${celdaMotivo.textContent.trim()}">`;
+
+            boton.textContent = "💾 Guardar";
+            boton.style.backgroundColor = "#2720FF";
+            boton.style.color = "white";
+            boton.setAttribute("onclick", "guardarFila(this)");
+        }
+
+        function guardarFila(boton) {
+            const fila = boton.closest('tr');
+
+            const celdaFecha = fila.querySelector('.edit-fecha');
+            const celdaHora = fila.querySelector('.edit-hora');
+            const celdaMascota = fila.querySelector('.edit-mascota');
+            const celdaDueno = fila.querySelector('.edit-dueno');
+            const celdaMotivo = fila.querySelector('.edit-motivo');
+
+            const nuevaFecha = celdaFecha.querySelector('input').value;
+            const nuevaHora = celdaHora.querySelector('input').value;
+            const nuevaMascota = celdaMascota.querySelector('input').value;
+            const nuevoDueno = celdaDueno.querySelector('input').value;
+            const nuevoMotivo = celdaMotivo.querySelector('input').value;
+
+            celdaFecha.textContent = nuevaFecha;
+            celdaHora.textContent = nuevaHora; 
+            celdaMascota.textContent = nuevaMascota;
+            celdaDueno.textContent = nuevoDueno;
+            celdaMotivo.textContent = nuevoMotivo;
+
+            boton.textContent = "✏️ Editar";
+            boton.style.backgroundColor = "#f8f9fa";
+            boton.style.color = "#2720FF";
+            boton.setAttribute("onclick", "editarFila(this)");
+        }
+
+        document.getElementById('btn-aceptar-eliminar').addEventListener('click', function() {
+            if (filaPorEliminar) {
+                filaPorEliminar.remove(); 
+                actualizarContadoresCitas(); 
+                verificarTablaVacia(); 
+                cerrarModalEliminar(); 
+            }
+        });
+
+        function filtrarTablaCitas() {
+            const textoBuscado = document.getElementById('buscador-citas').value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla-citas-body tr:not(.sin-datos-row)');
+
+            filas.forEach(fila => {
+                const textoFila = fila.textContent.toLowerCase();
+                if (textoFila.includes(textoBuscado)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+
+        function filtrarPorEstado() {
+            const seleccion = document.getElementById('filtro-citas').value;
+            const filas = document.querySelectorAll('#tabla-citas-body tr:not(.sin-datos-row)');
+
+            filas.forEach(fila => {
+                const badge = fila.querySelector('.badge');
+                if (!badge) return;
+                const estadoCita = badge.textContent.trim();
+
+                if (seleccion === 'todas' || estadoCita === seleccion) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
     </script>
 </body>
-
-
 </html>
