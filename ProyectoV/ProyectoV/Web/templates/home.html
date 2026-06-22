@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>VetConnect - Selección de Perfil</title>
+</head>
+<body>
+
+    <div class="selection-container">
+        <h1>Bienvenido a VetConnect, tu plataforma de gestión veterinaria.</h1>
+
+        <div class="cards-grid">
+            <!-- TARJETA VETERINARIO (CON ENFOQUE FORMAL Y AZUL) -->
+            <a href="/login-seleccion" class="profile-card veterinario-destacado">
+                <h2>Veterinario</h2>
+                
+                <!-- IMAGEN DESDE CARPETA STATIC CON NUEVO TAMAÑO COMPACTO -->
+                <img src="{{ url_for('static', filename='PerfilVet.jpg') }}" alt="Veterinario revisando un gato" class="card-image">
+                
+                <p class="description">Accede al perfil de veterinarios.</p>
+                
+                <span class="btn-perfil">Veterinario</span>
+            </a>
+        </div>
+
+        <a href="/" class="btn-volver">← Volver al inicio</a>
+    </div>
+
+    <style>
+        /* --- ESTILOS GENERALES Y FONDO BLANCO FORMAL --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #ffffff; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .selection-container {
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .selection-container h1 {
+            font-weight: 700;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 45px;
+        }
+
+        /* --- CONTENEDOR DE TARJETA --- */
+        .cards-grid {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        /* ESTRUCTURA DE LA TARJETA COMPORTAMIENTO FORMAL */
+        .profile-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 35px;
+            text-align: center;
+            text-decoration: none; 
+            color: #333;
+            transition: all 0.3s ease;
+            max-width: 400px; /* Reducido un poco para mayor balance */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* TITULO DE LA TARJETA */
+        .profile-card h2 {
+            font-weight: 700;
+            font-size: 24px;
+            color: #222;
+        }
+
+        /* AJUSTE COMPACTO PARA ENCUADRAR CARA Y GATO SIN ENLONGAR LA TARJETA */
+        .card-image {
+            width: 100%;
+            max-width: 85%;
+            height: 250px; /* Altura controlada y fija */
+            object-fit: cover; /* Recorta el sobrante manteniendo proporción */
+            object-position: top center; /* Centra el enfoque en la cabeza y el torso alto */
+            border-radius: 16px;
+            display: block;
+        }
+
+        /* TEXTO DESCRIPTIVO INFERIOR */
+        .description {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* BOTÓN AZUL INTERNO */
+        .btn-perfil {
+            background-color: #2720FF; 
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 12px 0;
+            width: 85%;
+            border-radius: 50px; 
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(39, 32, 255, 0.25);
+        }
+
+        /* --- EFECTO AGRANDADO, BORDE AZUL Y SOMBRA RESALTADA --- */
+        .profile-card.veterinario-destacado {
+            transform: scale(1.05); 
+            border: 2px solid #2720FF; 
+            
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), 
+                        0 8px 20px rgba(39, 32, 255, 0.08); 
+        }
+
+        .profile-card.veterinario-destacado:hover {
+            transform: scale(1.07) translateY(-4px);
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.18), 
+                        0 10px 25px rgba(39, 32, 255, 0.15);
+        }
+
+        /* --- BOTÓN VOLVER --- */
+        .btn-volver {
+            display: inline-block;
+            text-decoration: none;
+            color: #666;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-volver:hover {
+            color: #111;
+            background: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+
+</body>
+</html>

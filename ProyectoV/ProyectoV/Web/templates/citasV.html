@@ -8,19 +8,20 @@
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-inner">
-            <div class="nav-brand">
-                <div class="nav-icon">V</div>
-                <span>VetConnect Panel</span>
-            </div>
-            <div class="nav-links">
-                <a class="nav-link active" href="#">Citas</a>
-                <a class="nav-link" href="#">Pacientes</a>
-                <a class="nav-link" href="#">Mi Perfil</a>
-            </div>
+   <nav class="navbar">
+    <div class="nav-inner">
+        <div class="nav-brand">
+            <div class="nav-icon">V</div>
+            <span>VetConnect Panel</span>
+        </div> <!-- Cierre correcto de nav-brand -->
+
+        <div class="nav-links" style="margin-left: auto;">
+            <a href="{{ url_for('citas_veterinario') }}" class="nav-link active">Citas</a>
+            <a href="{{ url_for('citas_paciente') }}" class="nav-link">Pacientes</a>
+            <a href="#" class="nav-link">Mi Perfil</a>
         </div>
-    </nav>
+    </div> <!-- Cierre que te faltaba de nav-inner -->
+</nav>
 
     <main class="portal-container">
         <header class="portal-header">
@@ -264,6 +265,13 @@
         .btn-nueva-cita:hover {
             background: #1c17c7;
         }
+
+           
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
         .portal-content {
             display: grid;
@@ -538,6 +546,8 @@
             padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer;
             font-family: 'Nunito', sans-serif;
         }
+
+
 
         @media (max-width: 992px) {
             .portal-content { grid-template-columns: 1fr; }

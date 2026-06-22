@@ -16,12 +16,11 @@
     <div class="tarjeta-registro">
       
       <div class="avatar-superior">
-       
-      </div>
+         </div>
 
       <h2>Registro de Veterinario</h2>
       
-      <form action="guardar_veterinario.php" method="post">
+      <form action="/guardar-veterinario" method="POST">
         
         <div class="fila-inputs">
           <div class="grupo-input">
@@ -41,6 +40,10 @@
         </div>
 
         <div class="grupo-input">
+  <input type="password" id="password" name="password" placeholder="Contraseña" required>
+</div>
+
+        <div class="grupo-input">
           <input type="text" id="especialidad" name="especialidad" placeholder="Especialidad (Ej. Cardiología)">
         </div>
 
@@ -48,33 +51,31 @@
           <input type="text" id="rol" name="rol" value="Veterinario" readonly class="input-readonly">
         </div>
 
-       <button type="button" class="btn-guardar" onclick="location.href='citasV.html'">
-    Guardar Perfil
-</button>
-      </form>
+        <button type="submit" class="btn-guardar">
+            Guardar Perfil
+        </button>
 
+      </form>
       <div class="acciones-veterinario">
-        <button type="button" class="btn-secundario">Ver citas</button>
+<button type="button" class="btn-secundario" onclick="location.href='/citas-veterinario'">Ver citas</button>
         <button type="button" class="btn-secundario">Registrar paciente</button>
-        <button type="button" class="btn-secundario">Editar perfil</button>
+       <button type="button" class="btn-secundario" onclick="location.href='/'">Ya tengo cuenta (Login)</button>
       </div>
 
     </div>
   </div>
 
- <style>
-
+  <style>
     :root {
-      --azul-oscuro: #1d26f3; /* El azul vibrante y oscuro de la imagen */
-      --azul-medio: #6e84ff;  /* El azul medio */
-      --celeste: #a3f4ff;      /* El celeste muy claro */
+      --azul-oscuro: #1d26f3; 
+      --azul-medio: #6e84ff;  
+      --celeste: #a3f4ff;      
       --blanco: #ffffff;
-      --magenta: #f6b366;      /* El rosa/magenta para acentos */
-      --texto-oscuro: #111111; /* Para texto principal si el azul es muy claro */
-      --texto-suave: #6e6e6e;  /* Gris suave para placeholder */
+      --magenta: #f6b366;      
+      --texto-oscuro: #111111; 
+      --texto-suave: #6e6e6e;  
     }
 
-  
     * {
         margin: 0;
         padding: 0;
@@ -83,7 +84,6 @@
     }
 
     body {
-      
         background-color: var(--celeste); 
         display: flex;
         justify-content: center;
@@ -101,13 +101,12 @@
         background-color: var(--blanco);
         border-radius: 35px;
         padding: 40px 30px 30px 30px;
-        box-shadow: 0 15px 35px rgba(29, 38, 243, 0.1); /* Sombra con toque azul */
+        box-shadow: 0 15px 35px rgba(29, 38, 243, 0.1); 
         position: relative;
         text-align: center;
         margin-top: 50px;
     }
 
-    /* AVATAR CIRCULAR SUPERIOR */
     .avatar-superior {
         width: 100px;
         height: 100px;
@@ -115,20 +114,13 @@
         position: absolute;
         top: -50px;
         left: calc(50% - 50px);
-        box-shadow: 0 8px 20px rgba(29, 38, 243, 0.2); /* Sombra con toque azul */
+        box-shadow: 0 8px 20px rgba(29, 38, 243, 0.2); 
         overflow: hidden;
         border: 5px solid var(--blanco);
+        background-color: #e0e0e0; /* Fondo gris temporal por si no hay foto */
     }
 
-    .avatar-superior img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    /* TÍTULO H2 */
     .tarjeta-registro h2 {
-        /* Usamos el azul oscuro para el título principal */
         color: var(--azul-oscuro); 
         font-size: 26px;
         font-weight: 500;
@@ -136,7 +128,6 @@
         margin-bottom: 30px;
     }
 
-  
     form {
         display: flex;
         flex-direction: column;
@@ -155,9 +146,8 @@
     .grupo-input input {
         width: 100%;
         padding: 15px 20px;
-        /* Fondo de los inputs: Celeste muy suave para texturizar */
         background-color: rgba(163, 244, 255, 0.1); 
-        border: 1px solid rgba(110, 132, 255, 0.2); /* Borde azul medio muy suave */
+        border: 1px solid rgba(110, 132, 255, 0.2); 
         border-radius: 20px;
         font-size: 15px;
         color: var(--texto-oscuro);
@@ -165,7 +155,6 @@
         transition: all 0.3s ease;
     }
 
-    
     .grupo-input input:focus {
         border-color: var(--azul-medio);
         box-shadow: 0 0 8px rgba(110, 132, 255, 0.2);
@@ -176,7 +165,6 @@
         font-weight: 400;
     }
 
-    /* Input de rol (solo lectura) */
     .grupo-input input.input-readonly {
         background-color: #f5f5f5;
         color: #7a828a;
@@ -184,8 +172,6 @@
         border-color: #e0e0e0;
     }
 
- 
-    /* Botón Principal (Guardar Perfil): Azul Oscuro y Vibrante */
     .btn-guardar {
         background-color: var(--azul-oscuro);
         color: white;
@@ -200,7 +186,7 @@
     }
 
     .btn-guardar:hover {
-        background-color: var(--azul-medio); /* Cambia a azul medio en hover */
+        background-color: var(--azul-medio); 
         box-shadow: 0 5px 15px rgba(29, 38, 243, 0.3);
     }
 
@@ -208,18 +194,16 @@
         transform: scale(0.98);
     }
 
-    /* Sección de acciones secundarias abajo */
     .acciones-veterinario {
         margin-top: 25px;
         padding-top: 20px;
-        border-top: 1px solid rgba(110, 132, 255, 0.1); /* Línea divisoria azul muy sutil */
+        border-top: 1px solid rgba(110, 132, 255, 0.1); 
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 10px;
     }
 
-    /* Botones Secundarios: Usamos el azul medio para el borde y texto */
     .btn-secundario {
         background: none;
         border: 1px solid var(--azul-medio);
@@ -237,19 +221,16 @@
         color: white;
     }
 
-    /* Acento de Magenta: Un sutil detalle al final */
     .acciones-veterinario:after {
         content: '';
         display: block;
         width: 40px;
         height: 2px;
-        background-color: var(--magenta); /* Acento magenta al final */
+        background-color: var(--magenta); 
         margin-top: 20px;
         border-radius: 1px;
     }
-
   </style>
 
 </body>
 </html>
-

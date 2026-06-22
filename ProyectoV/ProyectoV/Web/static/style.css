@@ -8,7 +8,7 @@ html {
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background-image: url("FondoIndex.png"); /* Mantiene tu fondo del perrito */
+    background-image: url("/static/FondoIndex.png"); /* Mantiene tu fondo del perrito */
     background-size: cover;             
     background-repeat: no-repeat;       
     background-attachment: fixed;       
@@ -32,7 +32,7 @@ body {
 .MensajeBienvenida h1 {
   font-family: 'Nunito', sans-serif; /* Asegura que use la tipografía correcta */
   font-size: 3rem;
-  font-weight: 600; /* 👈 Aquí cambiamos a 400 para reducir el grosor al mínimo */
+  font-weight: 600; 
   margin-bottom: 10px;
   line-height: 1.2;
 }

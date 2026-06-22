@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>VetConnect - Historial de Pacientes</title>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #FEF7CD; 
+            color: #333;
+        }
+
+        .navbar {
+            background: #ffffff;
+            padding: 14px 40px;
+            border-bottom: 2px solid #C5A3FF; 
+            box-shadow: 0 4px 15px rgba(197, 163, 255, 0.1);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .nav-icon {
+            border: 2px solid #C5A3FF; 
+            background: #C5A3FF;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            color: #8A52F2;
+            background: rgba(197, 163, 255, 0.2);
+        }
+
+        .portal-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .portal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .portal-header h1 {
+            font-weight: 900;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .portal-header p {
+            color: #555;
+            font-size: 15px;
+        }
+
+        .btn-nuevo-paciente {
+            background: #8820ff; 
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            transition: background 0.2s;
+        }
+
+        .btn-nuevo-paciente:hover {
+            background: #8c32b0;
+        }
+
+        /* --- CUADRÍCULA (GRID) --- */
+        .portal-content {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .excel-section {
+            background: #ffffff; 
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
+            overflow: hidden;
+            border: 1px solid rgba(197, 163, 255, 0.2);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .excel-table th {
+            background-color: #fcfbfa;
+            color: #444;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid #FEF7CD; 
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .excel-table td {
+            padding: 16px;
+            border-bottom: 1px solid #edf2f7;
+            color: #555;
+            background-color: #ffffff;
+            vertical-align: middle;
+        }
+
+        /* --- BOTONES DE ACCIONES --- */
+        .acciones-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-editar {
+            background: #f5b041;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .btn-editar:hover {
+            background: #dc921e;
+        }
+
+        .btn-eliminar {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .btn-eliminar:hover {
+            background: #c0392b;
+        }
+
+        /* --- COLUMNA LATERAL (ESTADÍSTICAS) --- */
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .filter-card {
+            background: #ffffff; 
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            border: 1px solid rgba(197, 163, 255, 0.2);
+        }
+
+        .filter-card h3 {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .filter-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .status-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            background: #fdfdfd;
+            border: 1px solid #edf2f7;
+        }
+
+        .status-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .status-count {
+            font-size: 22px;
+            font-weight: 900;
+            color: #111;
+            margin-top: 2px;
+        }
+
+        .status-indicator {
+            width: 6px;
+            height: 35px;
+            border-radius: 10px;
+        }
+
+        .select-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 20px;
+        }
+
+        .select-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mini-barra-select {
+            width: 100%;
+            padding: 10px 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            background-color: #ffffff;
+            border: 2px solid #C5A3FF; 
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C5A3FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 14px;
+            padding-right: 35px;
+        }
+
+        /* --- SISTEMA DE MODALES FLOTANTES ONDULADOS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .modal-overlay.mostrar {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .btn-cerrar-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .btn-cerrar-modal:hover {
+            color: #333;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .form-list-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .form-list-group label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #444;
+        }
+
+        .form-list-group input, .form-list-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .btn-guardar-cita {
+            width: 100%;
+            background: #b120ff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .btn-guardar-cita:hover {
+            background: #824791;
+        }
+
+        /* Modal Alerta de Eliminación */
+        .modal-confirm-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn-confirm-cancel {
+            flex: 1;
+            background: #eee;
+            color: #333;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn-confirm-accept {
+            flex: 1;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn-confirm-accept:hover { background: #c0392b; }
+        .btn-confirm-cancel:hover { background: #ddd; }
+
+        @media (max-width: 992px) {
+            .portal-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <div class="nav-icon">V</div>
+                <span>VetConnect Pacientes</span>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('citas_veterinario') }}" class="nav-link active">Citas</a>
+                <a class="nav-link active" href="#">Pacientes</a>
+            
+            </div>
+        </div>
+    </nav>
+
+    <main class="portal-container">
+        <header class="portal-header">
+            <div>
+                <h1>Vistas de pacientes</h1>
+                <p>Puedes registrar y ver tus pacientes registrados.</p>
+            </div>
+            <button class="btn-nuevo-paciente" onclick="abrirModal()">+ Nuevo paciente</button>
+        </header>
+
+        <div class="portal-content">
+            
+            <section class="excel-section">
+                <div class="table-responsive">
+                    <table class="excel-table">
+                        <thead>
+                            <tr>
+                                <th>Código Mascota</th>
+                                <th>Mascota</th>
+                                <th>Dueño</th>
+                                <th>Raza</th>
+                                <th>Fecha de Nacimiento</th>
+                                <th>Especie</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-pacientes-body">
+                            <tr class="sin-datos-row">
+                                <td colspan="7" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
+                                    No hay registros médicos cargados. Los datos de la mascota aparecerán aquí tras conectar la base de datos.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <aside class="sidebar-section">
+                <div class="filter-card">
+                    <h3>Estadísticas de Mascotas</h3>
+                    <p class="filter-desc">Visualiza rápidamente la cantidad de pacientes registrados por especie.</p>
+                    
+                    <div class="status-box">
+                        <div class="status-info">
+                            <span class="status-title">Perros Registrados</span>
+                            <span class="status-count" id="contador-perros">0</span>
+                        </div>
+                        <div class="status-indicator" style="background-color: #2ec4b6;"></div> 
+                    </div>
+
+                    <div class="status-box">
+                        <div class="status-info">
+                            <span class="status-title">Gatos Registrados</span>
+                            <span class="status-count" id="contador-gatos">0</span>
+                        </div>
+                        <div class="status-indicator" style="background-color: #f5b041;"></div> 
+                    </div>
+
+                    <div class="select-container">
+                        <label for="filtro-especie" class="select-label">Filtrar Historial:</label>
+                        <select id="filtro-especie" class="mini-barra-select" onchange="filtrarMascotas()">
+                            <option value="todos">Ver Todos</option>
+                            <option value="perro">Solo Perros</option>
+                            <option value="gato">Solo Gatos</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <div id="modalpaciente" class="modal-overlay">
+            <div class="modal-content-box">
+                <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
+                <h2>Registrar Nuevo Paciente</h2>
+                <p class="modal-subtitle">Por favor, rellene los datos de la mascota para el expediente médico:</p>
+                
+                <form id="form-nuevo-paciente" onsubmit="agregarPacienteManual(event)">
+                    <div class="form-list-group">
+                        <label>1. Código de Mascota</label>
+                        <input type="text" id="input-codigo" placeholder="Ej. 7887678" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>2. Nombre de la Mascota / Paciente</label>
+                        <input type="text" id="input-mascota" placeholder="Ej. Mario" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>3. Nombre del Dueño</label>
+                        <input type="text" id="input-dueno" placeholder="Ej. Maximiliano perez" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>4. Raza</label>
+                        <input type="text" id="input-raza" placeholder="Ej. Pastor Aleman" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>5. Fecha de nacimiento</label>
+                        <input type="date" id="input-fecha" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>6. Especie</label>
+                        <select id="input-especie" required>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-guardar-cita">Guardar Paciente</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modaleditar" class="modal-overlay">
+            <div class="modal-content-box">
+                <span class="btn-cerrar-modal" onclick="cerrarModalEditar()">&times;</span>
+                <h2>Editar Paciente</h2>
+                <p class="modal-subtitle">Modifique los datos correspondientes del expediente:</p>
+                
+                <form id="form-editar-paciente" onsubmit="guardarCambiosPaciente(event)">
+                    <div class="form-list-group">
+                        <label>1. Código de Mascota</label>
+                        <input type="text" id="edit-codigo" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>2. Nombre de la Mascota / Paciente</label>
+                        <input type="text" id="edit-mascota" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>3. Nombre del Dueño</label>
+                        <input type="text" id="edit-dueno" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>4. Raza</label>
+                        <input type="text" id="edit-raza" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>5. Fecha de nacimiento</label>
+                        <input type="date" id="edit-fecha" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>6. Especie</label>
+                        <select id="edit-especie" required>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-guardar-cita" style="background: #f5b041;">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modaleliminar" class="modal-overlay">
+            <div class="modal-content-box" style="max-width: 400px; text-align: center;">
+                <h2>¿Eliminar Paciente?</h2>
+                <p class="modal-subtitle" style="margin-top: 10px;">Esta acción borrará el expediente permanentemente del registro visual de la tabla.</p>
+                <div class="modal-confirm-buttons">
+                    <button type="button" class="btn-confirm-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
+                    <button type="button" class="btn-confirm-accept" onclick="confirmarBorradoFila()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let filaSeleccionada = null;
+        let filaParaEliminar = null;
+
+        function abrirModal() { document.getElementById('modalpaciente').classList.add('mostrar'); }
+        function cerrarModal() {
+            document.getElementById('modalpaciente').classList.remove('mostrar');
+            document.getElementById('form-nuevo-paciente').reset(); 
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('modaleditar').classList.remove('mostrar');
+            document.getElementById('form-editar-paciente').reset();
+            filaSeleccionada = null;
+        }
+
+        function abrirModalEliminar(boton) {
+            filaParaEliminar = boton.closest('tr');
+            document.getElementById('modaleliminar').classList.add('mostrar');
+        }
+        function cerrarModalEliminar() {
+            document.getElementById('modaleliminar').classList.remove('mostrar');
+            filaParaEliminar = null;
+        }
+
+        function agregarPacienteManual(event) {
+            event.preventDefault(); 
+
+            const codigo = document.getElementById('input-codigo').value;
+            const mascota = document.getElementById('input-mascota').value;
+            const dueno = document.getElementById('input-dueno').value;
+            const raza = document.getElementById('input-raza').value;
+            const fechaNacimiento = document.getElementById('input-fecha').value;
+            const especie = document.getElementById('input-especie').value;
+
+            const tablaBody = document.getElementById('tabla-pacientes-body');
+            const filaSinDatos = tablaBody.querySelector('.sin-datos-row');
+            if (filaSinDatos) filaSinDatos.remove();
+
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.innerHTML = `
+                <td><strong>${codigo}</strong></td>
+                <td>${mascota}</td>
+                <td>${dueno}</td>
+                <td>${raza}</td>
+                <td>${fechaNacimiento}</td>
+                <td>${especie}</td>
+                <td>
+                    <div class="acciones-container">
+                        <button type="button" class="btn-editar" onclick="abrirModalEditar(this)">Editar</button>
+                        <button type="button" class="btn-eliminar" onclick="abrirModalEliminar(this)">Eliminar</button>
+                    </div>
+                </td>
+            `;
+
+            tablaBody.appendChild(nuevaFila);
+            cerrarModal();
+            actualizarContadoresPacientes();
+        }
+
+        function abrirModalEditar(boton) {
+            filaSeleccionada = boton.closest('tr');
+            
+            document.getElementById('edit-codigo').value = filaSeleccionada.children[0].textContent;
+            document.getElementById('edit-mascota').value = filaSeleccionada.children[1].textContent;
+            document.getElementById('edit-dueno').value = filaSeleccionada.children[2].textContent;
+            document.getElementById('edit-raza').value = filaSeleccionada.children[3].textContent;
+            document.getElementById('edit-fecha').value = filaSeleccionada.children[4].textContent;
+            document.getElementById('edit-especie').value = filaSeleccionada.children[5].textContent.trim();
+
+            document.getElementById('modaleditar').classList.add('mostrar');
+        }
+
+        function guardarCambiosPaciente(event) {
+            event.preventDefault();
+
+            if (filaSeleccionada) {
+                filaSeleccionada.children[0].innerHTML = `<strong>${document.getElementById('edit-codigo').value}</strong>`;
+                filaSeleccionada.children[1].textContent = document.getElementById('edit-mascota').value;
+                filaSeleccionada.children[2].textContent = document.getElementById('edit-dueno').value;
+                filaSeleccionada.children[3].textContent = document.getElementById('edit-raza').value;
+                filaSeleccionada.children[4].textContent = document.getElementById('edit-fecha').value;
+                filaSeleccionada.children[5].textContent = document.getElementById('edit-especie').value;
+
+                cerrarModalEditar();
+                actualizarContadoresPacientes();
+            }
+        }
+
+        function confirmarBorradoFila() {
+            if (filaParaEliminar) {
+                filaParaEliminar.remove();
+                
+                const tablaBody = document.getElementById('tabla-pacientes-body');
+                if (tablaBody.children.length === 0) {
+                    tablaBody.innerHTML = `
+                        <tr class="sin-datos-row">
+                            <td colspan="7" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
+                                No hay registros médicos cargados. Los datos de la mascota aparecerán aquí tras conectar la base de datos.
+                            </td>
+                        </tr>
+                    `;
+                }
+                cerrarModalEliminar();
+                actualizarContadoresPacientes();
+            }
+        }
+
+        function actualizarContadoresPacientes() {
+            const tablaBody = document.getElementById('tabla-pacientes-body');
+            if (!tablaBody || tablaBody.querySelector('.sin-datos-row')) {
+                document.getElementById('contador-perros').textContent = '0';
+                document.getElementById('contador-gatos').textContent = '0';
+                return;
+            }
+
+            let totalPerros = 0;
+            let totalGatos = 0;
+
+            tablaBody.querySelectorAll('tr').forEach(fila => {
+                const celdaEspecie = fila.children[5];
+                if (celdaEspecie) {
+                    const texto = celdaEspecie.textContent.toLowerCase();
+                    if (texto.includes('perro')) totalPerros++;
+                    else if (texto.includes('gato')) totalGatos++;
+                }
+            });
+
+            document.getElementById('contador-perros').textContent = totalPerros;
+            document.getElementById('contador-gatos').textContent = totalGatos;
+        }
+
+        function filtrarMascotas() {
+            const filtro = document.getElementById('filtro-especie').value;
+            const tablaBody = document.getElementById('tabla-pacientes-body');
+
+            tablaBody.querySelectorAll('tr').forEach(fila => {
+                if (fila.classList.contains('sin-datos-row')) return;
+                const textoEspecie = fila.children[5].textContent.toLowerCase();
+
+                if (filtro === 'todos' || (filtro === 'perro' && textoEspecie.includes('perro')) || (filtro === 'gato' && textoEspecie.includes('gato'))) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', actualizarContadoresPacientes);
+    </script>
+</body>
+</html>
