@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
     <title>VetConnect - Historial de Pacientes</title>
+    
     <style>
         /* --- ESTILOS GENERALES --- */
         * {
@@ -113,14 +114,7 @@
             background: #8c32b0;
         }
 
-        /* --- CUADRÍCULA (GRID) --- */
-        .portal-content {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 30px;
-            align-items: start;
-        }
-
+        /* --- SECCIÓN DE LA TABLA Y ACCIONES --- */
         .excel-section {
             background: #ffffff; 
             border-radius: 16px;
@@ -157,47 +151,6 @@
             color: #555;
             background-color: #ffffff;
             vertical-align: middle;
-        }
-
-        /* --- BOTONES DE ACCIONES --- */
-        .acciones-container {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .btn-editar {
-            background: #f5b041;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            font-size: 12px;
-            transition: background 0.2s;
-        }
-
-        .btn-editar:hover {
-            background: #dc921e;
-        }
-
-        .btn-eliminar {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            font-size: 12px;
-            transition: background 0.2s;
-        }
-
-        .btn-eliminar:hover {
-            background: #c0392b;
         }
 
         /* --- COLUMNA LATERAL (ESTADÍSTICAS) --- */
@@ -298,7 +251,7 @@
             padding-right: 35px;
         }
 
-        /* --- SISTEMA DE MODALES FLOTANTES ONDULADOS --- */
+        /* --- SISTEMA DE MODALES FLOTANTES (CORREGIDO) --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -306,18 +259,10 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            display: flex;
+            display: none; /* Cambiado a display none nativo para control unificado por JS */
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
             z-index: 1000;
-        }
-
-        .modal-overlay.mostrar {
-            opacity: 1;
-            pointer-events: auto;
         }
 
         .modal-content-box {
@@ -389,7 +334,6 @@
             background: #824791;
         }
 
-        /* Modal Alerta de Eliminación */
         .modal-confirm-buttons {
             display: flex;
             gap: 12px;
@@ -425,26 +369,31 @@
 
         @media (max-width: 992px) {
             .portal-content {
-                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
+            }
+            .sidebar-section {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-inner">
-            <div class="nav-brand">
-                <div class="nav-icon">V</div>
-                <span>VetConnect Pacientes</span>
-            </div>
-            <div class="nav-links">
-                <a href="{{ url_for('citas_veterinario') }}" class="nav-link active">Citas</a>
-                <a class="nav-link active" href="#">Pacientes</a>
-            
-            </div>
+ <nav class="navbar">
+    <div class="nav-inner">
+        <div class="nav-brand">
+            <div class="nav-icon">V</div>
+            <span>VetConnect Panel</span>
+        </div> <!-- Cierre correcto de nav-brand -->
+
+        <div class="nav-links" style="margin-left: auto;">
+            <a href="{{ url_for('citas_veterinario') }}" class="nav-link active">Citas</a>
+            <a href="{{ url_for('citas_paciente') }}" class="nav-link">Pacientes</a>
+            <a href="#" class="nav-link">Mi Perfil</a>
         </div>
-    </nav>
+    </div> <!-- Cierre que te faltaba de nav-inner -->
+</nav>
 
     <main class="portal-container">
         <header class="portal-header">
@@ -455,140 +404,239 @@
             <button class="btn-nuevo-paciente" onclick="abrirModal()">+ Nuevo paciente</button>
         </header>
 
-        <div class="portal-content">
+        <div class="portal-content" style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px;">
             
-            <section class="excel-section">
-                <div class="table-responsive">
-                    <table class="excel-table">
+           <section class="excel-section" style="flex: 1; min-width: 0;">
+                <div class="table-responsive" style="width: 100%; overflow-x: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <table class="excel-table" style="width: 100%; border-collapse: collapse; min-width: 950px; table-layout: fixed;">
                         <thead>
-                            <tr>
-                                <th>Código Mascota</th>
-                                <th>Mascota</th>
-                                <th>Dueño</th>
-                                <th>Raza</th>
-                                <th>Fecha de Nacimiento</th>
-                                <th>Especie</th>
-                                <th>Acciones</th>
-                            </tr>
+                         <tr style="background-color: #fafafa; border-bottom: 2px solid #eeeeee;">
+                    <th style="width: 9%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Código</th>
+                    <th style="width: 10%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Mascota</th>
+                    <th style="width: 11%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Dueño</th>
+                    <th style="width: 10%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Raza</th>
+                    <th style="width: 20%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">F. Nacimiento</th>
+                    <th style="width: 9%;  padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Género</th>
+                    <th style="width: 7%;  padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Peso</th>
+                    <th style="width: 10%;  padding: 15px 15px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Especie</th>
+                    <th style="width: 35%; padding: 15px 15px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: center;">Acciones</th>
+                </tr>
                         </thead>
                         <tbody id="tabla-pacientes-body">
-                            <tr class="sin-datos-row">
-                                <td colspan="7" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
-                                    No hay registros médicos cargados. Los datos de la mascota aparecerán aquí tras conectar la base de datos.
-                                </td>
-                            </tr>
-                        </tbody>
+                            {% if mascotas %}
+                                {% for mascota in mascotas %}
+                                <tr>
+                                    <td>{{ mascota[0] }}</td> 
+                                    <td>{{ mascota[1] }}</td> 
+                                    <td>{{ mascota[2] }}</td> 
+                                    <td>{{ mascota[3] }}</td> 
+                                    <td>{{ mascota[4] }}</td> 
+                                    <td>{{ mascota[5] }}</td> 
+                                    <td>{{ mascota[6] }}</td> 
+                                    <td>{{ mascota[7] }}</td> 
+                                    <td>
+                                        <div class="table-actions" style="display: flex; gap: 8px; align-items: center; justify-content: center; white-space: nowrap;">
+                                            
+                                            <button type="button" class="btn-editar-trigger" 
+                                                    data-codigo="{{ mascota[0] }}"
+                                                    data-mascota="{{ mascota[1] }}"
+                                                    data-dueno="{{ mascota[2] }}"
+                                                    data-raza="{{ mascota[3] }}"
+                                                    data-fecha="{{ mascota[4] }}"
+                                                    data-genero="{{ mascota[5] }}"
+                                                    data-peso="{{ mascota[6] }}"
+                                                    data-especie="{{ mascota[7] }}"
+                                                    style="background-color: #f39c12; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: bold;">
+                                                Editar
+                                            </button>
+                                            
+                                            <button type="button" class="btn-diagnostico-trigger" 
+                                                    data-codigo="{{ mascota[0] }}"
+                                                    style="background-color: #3498db; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: bold;">
+                                                Diagnóstico
+                                            </button>
+                                            
+                                            <button type="button" class="btn-eliminar-trigger" 
+                                                    data-codigo="{{ mascota[0] }}"
+                                                    style="background-color: #c0392b; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: bold;">
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr class="sin-datos-row">
+                                    <td colspan="9" style="text-align: center; color: #999; padding: 50px; font-style: italic; font-size: 14px; background-color: #fafafa;">
+                                        No hay registros médicos cargados. Los datos de la mascota aparecerán aquí cuando los guardes en el formulario.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>      
                     </table>
                 </div>
             </section>
 
-            <aside class="sidebar-section">
-                <div class="filter-card">
-                    <h3>Estadísticas de Mascotas</h3>
-                    <p class="filter-desc">Visualiza rápidamente la cantidad de pacientes registrados por especie.</p>
-                    
-                    <div class="status-box">
-                        <div class="status-info">
-                            <span class="status-title">Perros Registrados</span>
-                            <span class="status-count" id="contador-perros">0</span>
-                        </div>
-                        <div class="status-indicator" style="background-color: #2ec4b6;"></div> 
-                    </div>
-
-                    <div class="status-box">
-                        <div class="status-info">
-                            <span class="status-title">Gatos Registrados</span>
-                            <span class="status-count" id="contador-gatos">0</span>
-                        </div>
-                        <div class="status-indicator" style="background-color: #f5b041;"></div> 
-                    </div>
-
-                    <div class="select-container">
-                        <label for="filtro-especie" class="select-label">Filtrar Historial:</label>
-                        <select id="filtro-especie" class="mini-barra-select" onchange="filtrarMascotas()">
-                            <option value="todos">Ver Todos</option>
-                            <option value="perro">Solo Perros</option>
-                            <option value="gato">Solo Gatos</option>
-                        </select>
-                    </div>
-                </div>
-            </aside>
+          <aside class="sidebar-section" style="width: 280px; flex-shrink: 0;">
+    <div class="filter-card">
+        <h3>Estadísticas de Mascotas</h3>
+        <p class="filter-desc">Visualiza rápidamente la cantidad de pacientes registrados por especie.</p>
+        
+        <div class="status-box">
+            <div class="status-info">
+                <span class="status-title">Perros Registrados</span>
+                <span class="status-count" id="contador-perros">{{ perros }}</span>
+            </div>
+            <div class="status-indicator" style="background-color: #2ec4b6;"></div> 
         </div>
 
+        <div class="status-box">
+            <div class="status-info">
+                <span class="status-title">Gatos Registrados</span>
+                <span class="status-count" id="contador-gatos">{{ gatos }}</span>
+            </div>
+            <div class="status-indicator" style="background-color: #f5b041;"></div> 
+        </div>
+
+        <div class="select-container">
+            <label for="filtro-especie" class="select-label">Filtrar Historial:</label>
+            <select id="filtro-especie" class="mini-barra-select" onchange="filtrarMascotas()">
+                <option value="todos">Ver Todos</option>
+                <option value="perro">Solo Perros</option>
+                <option value="gato">Solo Gatos</option>
+            </select>
+        </div>
+    </div>
+</aside>
+   </div>
+
         <div id="modalpaciente" class="modal-overlay">
-            <div class="modal-content-box">
+            <div class="modal-content-box" style="max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
                 <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
                 <h2>Registrar Nuevo Paciente</h2>
                 <p class="modal-subtitle">Por favor, rellene los datos de la mascota para el expediente médico:</p>
                 
-                <form id="form-nuevo-paciente" onsubmit="agregarPacienteManual(event)">
-                    <div class="form-list-group">
-                        <label>1. Código de Mascota</label>
-                        <input type="text" id="input-codigo" placeholder="Ej. 7887678" required>
+                <form id="form-nuevo-paciente" action="/guardar-mascota" method="POST" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+                    <div class="modal-scroll-inputs" style="overflow-y: auto; padding-right: 8px; margin-bottom: 15px; flex: 1;">
+                        <div class="form-list-group">
+                            <label>1. Código de Mascota</label>
+                            <input type="text" id="input-codigo" name="codigo" placeholder="Ej. 7887678" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>2. Nombre de la Mascota / Paciente</label>
+                            <input type="text" id="input-mascota" name="nombre_mascota" placeholder="Ej. Mario" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>3. Nombre del Dueño</label>
+                            <input type="text" id="input-dueno" name="dueno" placeholder="Ej. Maximiliano perez" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>4. Raza</label>
+                            <input type="text" id="input-raza" name="raza" placeholder="Ej. Pastor Aleman" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>5. Fecha de nacimiento</label>
+                            <input type="date" id="input-fecha" name="fecha_nacimiento" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>6. Género</label>
+                            <select id="input-genero" name="genero" required>
+                                <option value="Macho">Macho</option>
+                                <option value="Hembra">Hembra</option>
+                            </select>
+                        </div>
+                        <div class="form-list-group">
+                            <label>7. Peso (en kg)</label>
+                            <input type="text" id="input-peso" name="peso" placeholder="Ej. 14.2" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>8. Especie</label>
+                            <select id="input-especie" name="especie" required>
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-list-group">
-                        <label>2. Nombre de la Mascota / Paciente</label>
-                        <input type="text" id="input-mascota" placeholder="Ej. Mario" required>
-                    </div>
-                    <div class="form-list-group">
-                        <label>3. Nombre del Dueño</label>
-                        <input type="text" id="input-dueno" placeholder="Ej. Maximiliano perez" required>
-                    </div>
-                    <div class="form-list-group">
-                        <label>4. Raza</label>
-                        <input type="text" id="input-raza" placeholder="Ej. Pastor Aleman" required>
-                    </div>
-                    <div class="form-list-group">
-                        <label>5. Fecha de nacimiento</label>
-                        <input type="date" id="input-fecha" required>
-                    </div>
-                    <div class="form-list-group">
-                        <label>6. Especie</label>
-                        <select id="input-especie" required>
-                            <option value="Perro">Perro</option>
-                            <option value="Gato">Gato</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-guardar-cita">Guardar Paciente</button>
-                </form>
+                    <button type="submit" class="btn-guardar-cita" style="width: 100%;">Guardar Paciente</button>
+                </form> 
             </div>
         </div>
 
         <div id="modaleditar" class="modal-overlay">
-            <div class="modal-content-box">
+            <div class="modal-content-box" style="max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
                 <span class="btn-cerrar-modal" onclick="cerrarModalEditar()">&times;</span>
-                <h2>Editar Paciente</h2>
-                <p class="modal-subtitle">Modifique los datos correspondientes del expediente:</p>
+                <h2>Editar Datos del Paciente</h2>
+                <p class="modal-subtitle">Modifique la información necesaria del expediente médico:</p>
                 
-                <form id="form-editar-paciente" onsubmit="guardarCambiosPaciente(event)">
-                    <div class="form-list-group">
-                        <label>1. Código de Mascota</label>
-                        <input type="text" id="edit-codigo" required>
+                <form id="form-editar-paciente" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+                    <div class="modal-scroll-inputs" style="overflow-y: auto; padding-right: 8px; margin-bottom: 15px; flex: 1;">
+                        <div class="form-list-group">
+                            <label>Código de Mascota (No editable)</label>
+                            <input type="text" id="edit-codigo" name="codigo" readonly style="background-color: #f5f5f5; color: #777;">
+                        </div>
+                        <div class="form-list-group">
+                            <label>Nombre de la Mascota</label>
+                            <input type="text" id="edit-mascota" name="nombre_mascota" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>Nombre del Dueño</label>
+                            <input type="text" id="edit-dueno" name="dueno" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>Raza</label>
+                            <input type="text" id="edit-raza" name="raza" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>Fecha de nacimiento</label>
+                            <input type="date" id="edit-fecha" name="fecha_nacimiento" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>Género</label>
+                            <select id="edit-genero" name="genero" required>
+                                <option value="Macho">Macho</option>
+                                <option value="Hembra">Hembra</option>
+                            </select>
+                        </div>
+                        <div class="form-list-group">
+                            <label>Peso (en kg)</label>
+                            <input type="text" id="edit-peso" name="peso" required>
+                        </div>
+                        <div class="form-list-group">
+                            <label>Especie</label>
+                            <select id="edit-especie" name="especie" required>
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-list-group">
-                        <label>2. Nombre de la Mascota / Paciente</label>
-                        <input type="text" id="edit-mascota" required>
+                    <button type="submit" class="btn-guardar-cita" style="width: 100%; background-color: #f5b041;">Actualizar Cambios</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modaldiagnostico" class="modal-overlay">
+            <div class="modal-content-box" style="max-width: 450px;">
+                <span class="btn-cerrar-modal" onclick="cerrarModalDiagnostico()">&times;</span>
+                <h2 style="color: #2980b9;">🩺 Registrar Diagnóstico</h2>
+                <p class="modal-subtitle">Mascota seleccionada: <span id="diag-codigo-display" style="font-weight: bold; color: #333;"></span></p>
+                
+                <form id="form-diagnostico" style="margin-top: 15px;">
+                    <input type="hidden" id="diag-codigo-mascota" name="codigo_mascota">
+
+                    <div class="form-list-group" style="margin-bottom: 15px;">
+                        <label style="font-weight: 600;">Descripción del Diagnóstico</label>
+                        <textarea id="diag-descripcion" name="descripcion" placeholder="Ej. El paciente presents un cuadro clínico de..." rows="4" style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 8px; font-family: inherit; resize: none;" required></textarea>
                     </div>
-                    <div class="form-list-group">
-                        <label>3. Nombre del Dueño</label>
-                        <input type="text" id="edit-dueno" required>
+
+                    <div class="form-list-group" style="margin-bottom: 20px;">
+                        <label style="font-weight: 600;">Tratamiento Asignado</label>
+                        <textarea id="diag-tratamiento" name="tratamiento" placeholder="Ej. Administrar medicamento X cada..." rows="3" style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 8px; font-family: inherit; resize: none;" required></textarea>
                     </div>
-                    <div class="form-list-group">
-                        <label>4. Raza</label>
-                        <input type="text" id="edit-raza" required>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" class="btn-confirm-cancel" onclick="cerrarModalDiagnostico()">Cancelar</button>
+                        <button type="submit" class="btn-guardar-cita" style="width: auto; padding: 10px 20px; background-color: #2980b9; margin-top: 0;">Guardar Diagnóstico</button>
                     </div>
-                    <div class="form-list-group">
-                        <label>5. Fecha de nacimiento</label>
-                        <input type="date" id="edit-fecha" required>
-                    </div>
-                    <div class="form-list-group">
-                        <label>6. Especie</label>
-                        <select id="edit-especie" required>
-                            <option value="Perro">Perro</option>
-                            <option value="Gato">Gato</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-guardar-cita" style="background: #f5b041;">Guardar Cambios</button>
                 </form>
             </div>
         </div>
@@ -597,164 +645,46 @@
             <div class="modal-content-box" style="max-width: 400px; text-align: center;">
                 <h2>¿Eliminar Paciente?</h2>
                 <p class="modal-subtitle" style="margin-top: 10px;">Esta acción borrará el expediente permanentemente del registro visual de la tabla.</p>
-                <div class="modal-confirm-buttons">
+                <div class="modal-confirm-buttons" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                     <button type="button" class="btn-confirm-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
                     <button type="button" class="btn-confirm-accept" onclick="confirmarBorradoFila()">Eliminar</button>
                 </div>
             </div>
         </div>
-
+        </div>
     </main>
 
-    <script>
-        let filaSeleccionada = null;
-        let filaParaEliminar = null;
-
-        function abrirModal() { document.getElementById('modalpaciente').classList.add('mostrar'); }
-        function cerrarModal() {
-            document.getElementById('modalpaciente').classList.remove('mostrar');
-            document.getElementById('form-nuevo-paciente').reset(); 
+  <script>
+    function filtrarMascotas() {
+        var filtro = document.getElementById("filtro-especie").value;
+        var filas = document.querySelectorAll("table tbody tr");
+        
+        if (filas.length === 0) {
+            filas = document.querySelectorAll("table tr");
         }
 
-        function cerrarModalEditar() {
-            document.getElementById('modaleditar').classList.remove('mostrar');
-            document.getElementById('form-editar-paciente').reset();
-            filaSeleccionada = null;
-        }
+        filas.forEach(function(fila) {
+            if (fila.querySelector("th")) return;
 
-        function abrirModalEliminar(boton) {
-            filaParaEliminar = boton.closest('tr');
-            document.getElementById('modaleliminar').classList.add('mostrar');
-        }
-        function cerrarModalEliminar() {
-            document.getElementById('modaleliminar').classList.remove('mostrar');
-            filaParaEliminar = null;
-        }
-
-        function agregarPacienteManual(event) {
-            event.preventDefault(); 
-
-            const codigo = document.getElementById('input-codigo').value;
-            const mascota = document.getElementById('input-mascota').value;
-            const dueno = document.getElementById('input-dueno').value;
-            const raza = document.getElementById('input-raza').value;
-            const fechaNacimiento = document.getElementById('input-fecha').value;
-            const especie = document.getElementById('input-especie').value;
-
-            const tablaBody = document.getElementById('tabla-pacientes-body');
-            const filaSinDatos = tablaBody.querySelector('.sin-datos-row');
-            if (filaSinDatos) filaSinDatos.remove();
-
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.innerHTML = `
-                <td><strong>${codigo}</strong></td>
-                <td>${mascota}</td>
-                <td>${dueno}</td>
-                <td>${raza}</td>
-                <td>${fechaNacimiento}</td>
-                <td>${especie}</td>
-                <td>
-                    <div class="acciones-container">
-                        <button type="button" class="btn-editar" onclick="abrirModalEditar(this)">Editar</button>
-                        <button type="button" class="btn-eliminar" onclick="abrirModalEliminar(this)">Eliminar</button>
-                    </div>
-                </td>
-            `;
-
-            tablaBody.appendChild(nuevaFila);
-            cerrarModal();
-            actualizarContadoresPacientes();
-        }
-
-        function abrirModalEditar(boton) {
-            filaSeleccionada = boton.closest('tr');
+            // Buscamos la celda número 7 (Especie)
+            var celdaEspecie = fila.getElementsByTagName("td")[7];
             
-            document.getElementById('edit-codigo').value = filaSeleccionada.children[0].textContent;
-            document.getElementById('edit-mascota').value = filaSeleccionada.children[1].textContent;
-            document.getElementById('edit-dueno').value = filaSeleccionada.children[2].textContent;
-            document.getElementById('edit-raza').value = filaSeleccionada.children[3].textContent;
-            document.getElementById('edit-fecha').value = filaSeleccionada.children[4].textContent;
-            document.getElementById('edit-especie').value = filaSeleccionada.children[5].textContent.trim();
+            if (celdaEspecie) {
+                var textoEspecie = celdaEspecie.textContent || celdaEspecie.innerText;
+                textoEspecie = textoEspecie.toLowerCase().trim();
 
-            document.getElementById('modaleditar').classList.add('mostrar');
-        }
-
-        function guardarCambiosPaciente(event) {
-            event.preventDefault();
-
-            if (filaSeleccionada) {
-                filaSeleccionada.children[0].innerHTML = `<strong>${document.getElementById('edit-codigo').value}</strong>`;
-                filaSeleccionada.children[1].textContent = document.getElementById('edit-mascota').value;
-                filaSeleccionada.children[2].textContent = document.getElementById('edit-dueno').value;
-                filaSeleccionada.children[3].textContent = document.getElementById('edit-raza').value;
-                filaSeleccionada.children[4].textContent = document.getElementById('edit-fecha').value;
-                filaSeleccionada.children[5].textContent = document.getElementById('edit-especie').value;
-
-                cerrarModalEditar();
-                actualizarContadoresPacientes();
-            }
-        }
-
-        function confirmarBorradoFila() {
-            if (filaParaEliminar) {
-                filaParaEliminar.remove();
-                
-                const tablaBody = document.getElementById('tabla-pacientes-body');
-                if (tablaBody.children.length === 0) {
-                    tablaBody.innerHTML = `
-                        <tr class="sin-datos-row">
-                            <td colspan="7" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
-                                No hay registros médicos cargados. Los datos de la mascota aparecerán aquí tras conectar la base de datos.
-                            </td>
-                        </tr>
-                    `;
-                }
-                cerrarModalEliminar();
-                actualizarContadoresPacientes();
-            }
-        }
-
-        function actualizarContadoresPacientes() {
-            const tablaBody = document.getElementById('tabla-pacientes-body');
-            if (!tablaBody || tablaBody.querySelector('.sin-datos-row')) {
-                document.getElementById('contador-perros').textContent = '0';
-                document.getElementById('contador-gatos').textContent = '0';
-                return;
-            }
-
-            let totalPerros = 0;
-            let totalGatos = 0;
-
-            tablaBody.querySelectorAll('tr').forEach(fila => {
-                const celdaEspecie = fila.children[5];
-                if (celdaEspecie) {
-                    const texto = celdaEspecie.textContent.toLowerCase();
-                    if (texto.includes('perro')) totalPerros++;
-                    else if (texto.includes('gato')) totalGatos++;
-                }
-            });
-
-            document.getElementById('contador-perros').textContent = totalPerros;
-            document.getElementById('contador-gatos').textContent = totalGatos;
-        }
-
-        function filtrarMascotas() {
-            const filtro = document.getElementById('filtro-especie').value;
-            const tablaBody = document.getElementById('tabla-pacientes-body');
-
-            tablaBody.querySelectorAll('tr').forEach(fila => {
-                if (fila.classList.contains('sin-datos-row')) return;
-                const textoEspecie = fila.children[5].textContent.toLowerCase();
-
-                if (filtro === 'todos' || (filtro === 'perro' && textoEspecie.includes('perro')) || (filtro === 'gato' && textoEspecie.includes('gato'))) {
-                    fila.style.display = '';
+                if (filtro === "todos") {
+                    fila.style.display = ""; 
+                } else if (filtro === "perro" && (textoEspecie.includes("perro") || textoEspecie.includes("canino"))) {
+                    fila.style.display = ""; 
+                } else if (filtro === "gato" && (textoEspecie.includes("gato") || textoEspecie.includes("felino"))) {
+                    fila.style.display = ""; 
                 } else {
-                    fila.style.display = 'none';
+                    fila.style.display = "none"; 
                 }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', actualizarContadoresPacientes);
+            }
+        });
+    }
     </script>
 </body>
 </html>
