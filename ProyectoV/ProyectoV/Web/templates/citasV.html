@@ -60,14 +60,40 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla-citas-body">
-                            <tr class="sin-datos-row">
-                                <td colspan="8" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
-                                    No hay citas registradas en este momento. Las nuevas citas aparecerán aquí dinámicamente.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <tbody id="tabla-citas-body">
+    {% if citas %}
+        {% for cita in citas %}
+            {% set estado = cita[6] %}
+            {% set clase_badge = 'badge-hecha' if estado == 'Hecha' else 'badge-pendiente' %}
+
+            <tr>
+                <td>{{ cita[0] }}</td>
+                <td class="edit-fecha">{{ cita[1] }}</td>
+                <td class="edit-hora">{{ cita[2] }}</td>
+                <td class="edit-mascota">{{ cita[3] }}</td>
+                <td class="edit-dueno">{{ cita[4] }}</td>
+                <td class="edit-motivo">{{ cita[5] }}</td>
+                <td class="celda-estado">
+                    <span class="badge {{ clase_badge }}" onclick="alternarEstadoDirecto(this)">
+                        {{ estado }}
+                    </span>
+                </td>
+                <td>
+                    <div class="actions-wrapper">
+                        <button class="btn-editar-fila" onclick="editarFila(this)">Editar</button>
+                        <button class="btn-eliminar-fila" onclick="abrirModalEliminar(this)">Eliminar</button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr class="sin-datos-row">
+            <td colspan="8" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
+                No hay citas registradas en este momento.
+            </td>
+        </tr>
+    {% endif %}
+</tbody>           </table>
                 </div>
             </section>
 
@@ -105,65 +131,71 @@
 
         </div>
 
-        <div id="modalCita" class="modal-overlay">
-            <div class="modal-content-box">
-                <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
-                <h2>Registrar Nueva Cita</h2>
-                <p class="modal-subtitle">Por favor rellene el formulario basado en el índice de la tabla:</p>
-                
-                <form id="form-nueva-cita" onsubmit="agregarCitaManual(event)">
-                    <div class="form-list-group">
-                        <label>1. Fecha de Consulta</label>
-                        <input type="date" id="input-fecha" required>
-                    </div>
-                    
-                    <div class="form-list-group">
-                        <label>2. Hora de Cita</label>
-                        <input type="time" id="input-hora" required>
-                    </div>
-                    
-                    <div class="form-list-group">
-                        <label>3. Paciente / Mascota</label>
-                        <input type="text" id="input-mascota" placeholder="Ej. Lucas (Golden Retriever)" required>
-                    </div>
-                    
-                    <div class="form-list-group">
-                        <label>4. Nombre del Dueño</label>
-                        <input type="text" id="input-dueno" placeholder="Ej. Carlos Mendoza" required>
-                    </div>
-                    
-                    <div class="form-list-group">
-                        <label>5. Motivo de Consulta</label>
-                        <input type="text" id="input-motivo" placeholder="Ej. Vacunación Anual o Limpieza" required>
-                    </div>
-                    
-                    <div class="form-list-group">
-                        <label>6. Estado Inicial</label>
-                        <select id="input-estado">
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Hecha">Hecha</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="btn-guardar-cita">Añadir a la Tabla</button>
-                </form>
+   <div id="modalCita" class="modal-overlay">
+    <div class="modal-content-box">
+        <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
+        <h2>Registrar Nueva Cita</h2>
+        <p class="modal-subtitle">Por favor rellene el formulario basado en el índice de la tabla:</p>
+        
+        <form id="form-nueva-cita" action="/guardar-cita" method="POST">
+            
+            <div class="form-list-group">
+                <label>1. Fecha de Consulta</label>
+                <input type="date" id="input-fecha" name="fecha_cita" required>
             </div>
-        </div>
-
-        <div id="modalConfirmarEliminar" class="modal-overlay">
-            <div class="modal-confirm-box">
-                <div class="confirm-icon">⚠️</div>
-                <h2>¿Eliminar este registro?</h2>
-                <p>Esta acción removerá permanentemente la cita médica del listado actual de consultas.</p>
-                <div class="confirm-actions">
-                    <button class="btn-confirm-cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
-                    <button class="btn-confirm-aceptar" id="btn-aceptar-eliminar">Eliminar Cita</button>
-                </div>
+            
+            <div class="form-list-group">
+                <label>2. Hora de Cita</label>
+                <input type="time" id="input-hora" name="hora_cita" required>
             </div>
+            
+        <div class="form-list-group">
+    <label>3. Seleccionar Paciente / Mascota</label>
+    <select id="input-mascota" name="codigo_mascota" onchange="actualizarDuenoAutomatico()" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; background-color: white;" required>
+    <option value="" disabled selected>Selecciona una mascota de la lista...</option>
+    {% for mascota in lista_mascotas %}
+        <option value="{{ mascota[0] }}" data-dueno="Sin Dueño Asignado">{{ mascota[1] }} (ID: {{ mascota[0] }})</option>
+    {% endfor %}
+</select>
+</div>
+
+<div class="form-list-group">
+    <label>4. Nombre del Dueño</label>
+    <input type="text" id="input-dueno" name="nombre_dueno" placeholder="Se asignará automáticamente al elegir la mascota" readonly style="background-color: #f7fafc; cursor: not-allowed; width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+</div>
+            
+            <div class="form-list-group">
+                <label>5. Motivo de Consulta</label>
+                <input type="text" id="input-motivo" name="motivo" placeholder="Ej. Vacunación Anual o Limpieza" required>
+            </div>
+            
+            <div class="form-list-group">
+                <label>6. Estado Inicial</label>
+                <select id="input-estado" name="estado">
+                    <option value="Pendiente" selected>Pendiente</option>
+                    <option value="Completada">Completada</option>
+                    <option value="Cancelada">Cancelada</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn-guardar-cita">Añadir a la Tabla</button>
+        </form>
+    </div>
+</div>
+
+<div id="modalConfirmarEliminar" class="modal-overlay">
+    <div class="modal-confirm-box">
+        <div class="confirm-icon">⚠️</div>
+        <h2>¿Eliminar este registro?</h2>
+        <p>Esta acción removerá permanentemente la cita médica del listado actual de consultas.</p>
+        <div class="confirm-actions">
+            <button class="btn-confirm-cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
+            <button class="btn-confirm-aceptar" id="btn-aceptar-eliminar">Eliminar Cita</button>
         </div>
+    </div>
+</div>
 
-    </main>
-
+</main>
     <style> 
         * {
             box-sizing: border-box;
@@ -679,8 +711,8 @@
                 </td>
                 <td>
                     <div class="actions-wrapper">
-                        <button class="btn-editar-fila" onclick="editarFila(this)">✏️ Editar</button>
-                        <button class="btn-eliminar-fila" onclick="abrirModalEliminar(this)">❌ Eliminar</button>
+                        <button class="btn-editar-fila" onclick="editarFila(this)"> Editar</button>
+                        <button class="btn-eliminar-fila" onclick="abrirModalEliminar(this)"> Eliminar</button>
                     </div>
                 </td>
             `;
@@ -709,7 +741,7 @@
             celdaDueno.innerHTML = `<input type="text" class="table-inline-input" value="${celdaDueno.textContent.trim()}">`;
             celdaMotivo.innerHTML = `<input type="text" class="table-inline-input" value="${celdaMotivo.textContent.trim()}">`;
 
-            boton.textContent = "💾 Guardar";
+            boton.textContent = " Guardar";
             boton.style.backgroundColor = "#2720FF";
             boton.style.color = "white";
             boton.setAttribute("onclick", "guardarFila(this)");
@@ -736,7 +768,7 @@
             celdaDueno.textContent = nuevoDueno;
             celdaMotivo.textContent = nuevoMotivo;
 
-            boton.textContent = "✏️ Editar";
+            boton.textContent = " Editar";
             boton.style.backgroundColor = "#f8f9fa";
             boton.style.color = "#2720FF";
             boton.setAttribute("onclick", "editarFila(this)");
@@ -781,6 +813,98 @@
                 }
             });
         }
+
+ function actualizarDuenoAutomatico() {
+    const selectorMascota = document.getElementById('input-mascota');
+    const inputDueno = document.getElementById('input-dueno');
+    
+    // Obtiene la opción seleccionada
+    const opcionSeleccionada = selectorMascota.options[selectorMascota.selectedIndex];
+    
+    // Extrae el dueño guardado en 'data-dueno'
+    const nombreDueno = opcionSeleccionada.getAttribute('data-dueno');
+    
+    // Lo pone en el cuadro de texto
+    if (nombreDueno) {
+        inputDueno.value = nombreDueno;
+    } else {
+        inputDueno.value = "";
+    }
+
+}
+
+// 🔍 SISTEMA DE BÚSQUEDA EN TIEMPO REAL
+document.addEventListener("DOMContentLoaded", function () {
+    const inputBuscar = document.querySelector('input[placeholder*="Buscar por"]');
+    
+    if (inputBuscar) {
+        inputBuscar.addEventListener("input", function () {
+            const textoBusqueda = this.value.toLowerCase().trim();
+            // Selecciona todas las filas de datos de la tabla (omitiendo el encabezado)
+            const filasTabla = document.querySelectorAll("table tbody tr");
+
+            filasTabla.forEach(fila => {
+                // Capturamos las celdas clave de la tabla basándonos en tu diseño actual:
+                // Celda 3: Mascota | Celda 4: Dueño | Celda 5: Motivo de consulta
+                const celdaMascota = fila.cells[3] ? fila.cells[3].textContent.toLowerCase() : "";
+                const celdaDueno   = fila.cells[4] ? fila.cells[4].textContent.toLowerCase() : "";
+                const celdaMotivo  = fila.cells[5] ? fila.cells[5].textContent.toLowerCase() : "";
+
+                // Si lo que escribió el usuario coincide con alguno de estos tres campos...
+                if (
+                    celdaMascota.includes(textoBusqueda) || 
+                    celdaDueno.includes(textoBusqueda) || 
+                    celdaMotivo.includes(textoBusqueda)
+                ) {
+                    fila.style.display = ""; // 👁️ Muestra la fila
+                } else {
+                    fila.style.display = "none"; // 🥷 Oculta la fila
+                }
+            });
+        });
+        console.log(" ¡Buscador en tiempo real vinculado y listo!");
+    } else {
+        console.error(" No se encontró el campo input de búsqueda en el HTML.");
+    }
+});
+
+// ORDENAMIENTO AUTOMÁTICO POR ID AL CARGAR LA PÁGINA
+document.addEventListener("DOMContentLoaded", function () {
+    try {
+        // Buscamos la tabla de citas. Si tu tabla no tiene id="miTabla", 
+        // este selector buscará la primera tabla que encuentre en la página.
+        const tabla = document.getElementById("miTabla") || document.querySelector("table");
+        if (!tabla) return;
+
+        const tbody = tabla.tBodies[0];
+        if (!tbody) return;
+
+        const filas = Array.from(tbody.rows);
+
+        // Ordenamos de Mayor a Menor (Descendente) por la columna 0 (ID)
+        filas.sort((a, b) => {
+            const cellA = a.cells[0] ? a.cells[0].innerText.trim() : "0";
+            const cellB = b.cells[0] ? b.cells[0].innerText.trim() : "0";
+
+            const numA = parseFloat(cellA);
+            const numB = parseFloat(cellB);
+
+            // Si ambos son números (como tus IDs 1015, 50, 49...)
+    if (!isNaN(numA) && !isNaN(numB)) {
+    return numA - numB; // 🌟 Volteamos la resta aquí
+} else {
+    return cellA.localeCompare(cellB); // 🌟 Volteamos el orden de texto aquí
+}
+        });
+
+        // Volvemos a meter las filas ya ordenadas en la tabla
+        filas.forEach(row => tbody.appendChild(row));
+        console.log(" ¡Tabla ordenada por ID de forma descendente en el navegador!");
+
+    } catch (err) {
+        console.error("Error al ordenar la tabla automáticamente:", err);
+    }
+});
     </script>
 </body>
 </html>

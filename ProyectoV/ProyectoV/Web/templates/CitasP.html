@@ -98,6 +98,27 @@
             font-size: 15px;
         }
 
+         #buscador-paciente {
+            width: 100%;
+            padding: 12px 16px 12px 46px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            background-color: #f8f9fa; 
+            border: 2px solid #edf2f7;
+            border-radius: 50px; 
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        #buscador-paciente:focus {
+            background-color: #ffffff;
+            border-color: #2720FF; 
+            box-shadow: 0 4px 12px rgba(39, 32, 255, 0.06);
+        }
+
+
         .btn-nuevo-paciente {
             background: #8820ff; 
             color: white;
@@ -251,19 +272,19 @@
             padding-right: 35px;
         }
 
-        /* --- SISTEMA DE MODALES FLOTANTES (CORREGIDO) --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none; /* Cambiado a display none nativo para control unificado por JS */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+    
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none; /* 🌟 Cambiado a none por defecto */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
         .modal-content-box {
             background: white;
@@ -401,7 +422,19 @@
                 <h1>Vistas de pacientes</h1>
                 <p>Puedes registrar y ver tus pacientes registrados.</p>
             </div>
-            <button class="btn-nuevo-paciente" onclick="abrirModal()">+ Nuevo paciente</button>
+
+     <div class="search-container">
+                    <div class="search-box-wrapper">
+                        <input 
+                            type="text" 
+                            id="buscador-paciente" 
+                            placeholder="Buscar por paciente o dueño..."
+                            onkeyup="filtrarTablaCitas()"
+                        >
+                    </div>
+                </div>
+
+           <button class="btn-nuevo-paciente" onclick="abrirModalNuevo()">+ Nuevo paciente</button>
         </header>
 
         <div class="portal-content" style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px;">
@@ -651,6 +684,76 @@
                 </div>
             </div>
         </div>
+
+       <div id="modalnuevo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(2px);">
+    <div style="background: white; padding: 30px; border-radius: 16px; width: 550px; max-height: 90vh; box-shadow: 0 15px 35px rgba(0,0,0,0.1); display: flex; flex-direction: column; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; position: relative;">
+        
+        <button type="button" onclick="cerrarModalNuevo()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; color: #a0aec0; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#4a5568'" onmouseout="this.style.color='#a0aec0'">✕</button>
+
+        <div style="margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #1a202c; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Registrar Nuevo Paciente</h2>
+            <p style="color: #718096; font-size: 14px; margin: 6px 0 0 0;">Introduce los datos de la mascota para guardarla en el sistema.</p>
+        </div>
+        
+        <form action="/guardar-mascota" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+            
+            <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Nombre de la Mascota</label>
+                    <input type="text" name="nombre_mascota" placeholder="Ej. Lani" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none; background-color: #fff;" required>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Nombre del Dueño</label>
+                    <input type="text" name="dueno" placeholder="Nombre completo" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none; background-color: #fff;" required>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Especie</label>
+                    <select name="especie" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
+                        <option value="" disabled selected>Selecciona...</option>
+                        <option value="Canino">Canino</option>
+                        <option value="Felino">Felino</option>
+                        <option value="Ave">Ave</option>
+                        <option value="Roedor">Roedor</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Raza</label>
+                    <input type="text" name="raza" placeholder="Ej. Poodle, Siamés" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none;" required>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Género</label>
+                    <select name="genero" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
+                        <option value="" disabled selected>Selecciona...</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Hembra">Hembra</option>
+                    </select>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Peso (kg)</label>
+                    <input type="number" step="0.01" name="peso" placeholder="0.00" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none;" required>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Fecha de Nacimiento</label>
+                <input type="date" name="fecha_nacimiento" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none;" required>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end;">
+                <button type="button" onclick="cerrarModalNuevo()" style="background: #cbd5e0; color: #4a5568; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='#b2bfd2'" onmouseout="this.style.background='#cbd5e0'">Cancelar</button>
+                <button type="submit" style="background: #2516fa; color: white; border: none; padding: 12px 28px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 22, 250, 0.2); transition: background 0.2s;" onmouseover="this.style.background='#1a0ee0'" onmouseout="this.style.background='#2516fa'">Guardar Paciente</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
         </div>
     </main>
 
@@ -685,6 +788,131 @@
             }
         });
     }
+
+
+function abrirModalNuevo() {
+    // Busca tu modal por su ID original
+    const modal = document.getElementById("modalnuevo") || document.getElementById("modalregistrar");
+    if (modal) {
+        modal.style.display = "flex";
+    }
+}
+    
+    function cerrarModalNuevo() {
+        const modal = document.getElementById("modalnuevo") || document.getElementById("modalregistrar");
+        if (modal) modal.style.display = "none";
+    }
+
+    // ==========================================
+    // Escuchas dinámicas para capturar los datos de la tabla
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", function () {
+        
+        // 2. DETECTOR PARA LOS BOTONES DE EDITAR
+        document.querySelectorAll(".btn-editar-trigger").forEach(boton => {
+            boton.addEventListener("click", function () {
+                // Extrae los datos desde las propiedades data- de tu tabla
+                const codigo = this.getAttribute("data-codigo");
+                const mascota = this.getAttribute("data-mascota");
+                const dueno = this.getAttribute("data-dueno");
+                const raza = this.getAttribute("data-raza");
+                const fecha = this.getAttribute("data-fecha");
+                const genero = this.getAttribute("data-genero");
+                const peso = this.getAttribute("data-peso");
+                const especie = this.getAttribute("data-especie");
+
+                // Inyecta los valores dentro de los inputs de tu formulario de edición
+                if (document.getElementById("edit-codigo")) document.getElementById("edit-codigo").value = codigo;
+                if (document.getElementById("edit-mascota")) document.getElementById("edit-mascota").value = mascota;
+                if (document.getElementById("edit-dueno")) document.getElementById("edit-dueno").value = dueno;
+                if (document.getElementById("edit-raza")) document.getElementById("edit-raza").value = raza;
+                if (document.getElementById("edit-fecha")) document.getElementById("edit-fecha").value = fecha;
+                if (document.getElementById("edit-genero")) document.getElementById("edit-genero").value = genero;
+                if (document.getElementById("edit-peso")) document.getElementById("edit-peso").value = peso;
+                if (document.getElementById("edit-especie")) document.getElementById("edit-especie").value = especie;
+
+                // Muestra el modal
+                document.getElementById("modaleditar").style.display = "flex";
+            });
+        });
+
+        // 3. DETECTOR PARA LOS BOTONES DE DIAGNÓSTICO
+        document.querySelectorAll(".btn-diagnostico-trigger").forEach(boton => {
+            boton.addEventListener("click", function () {
+                const codigo = this.getAttribute("data-codigo");
+
+                if (document.getElementById("diag-codigo-display")) document.getElementById("diag-codigo-display").innerText = codigo;
+                if (document.getElementById("diag-codigo-mascota")) document.getElementById("diag-codigo-mascota").value = codigo;
+
+                document.getElementById("modaldiagnostico").style.display = "flex";
+            });
+        });
+
+        // 4. DETECTOR PARA LOS BOTONES DE ELIMINAR
+        document.querySelectorAll(".btn-eliminar-trigger").forEach(boton => {
+            boton.addEventListener("click", function () {
+                window.codigoMascotaAEliminar = this.getAttribute("data-codigo");
+                document.getElementById("modaleliminar").style.display = "flex";
+            });
+        });
+    });
+
+    // ==========================================
+    // Funciones globales de cierre y confirmación
+    // ==========================================
+    function cerrarModalEditar() {
+        document.getElementById("modaleditar").style.display = "none";
+    }
+
+    function cerrarModalDiagnostico() {
+        document.getElementById("modaldiagnostico").style.display = "none";
+    }
+
+    function cerrarModalEliminar() {
+        document.getElementById("modaleliminar").style.display = "none";
+    }
+
+    function confirmarBorradoFila() {
+        if (window.codigoMascotaAEliminar) {
+            // Envía la petición de borrado directo a la ruta creada en Flask
+            window.location.href = "/eliminar-mascota/" + window.codigoMascotaAEliminar;
+        }
+    }
+
+    // 🔍 SISTEMA DE BÚSQUEDA EN TIEMPO REAL
+document.addEventListener("DOMContentLoaded", function () {
+    const inputBuscar = document.querySelector('input[placeholder*="Buscar por"]');
+    
+    if (inputBuscar) {
+        inputBuscar.addEventListener("input", function () {
+            const textoBusqueda = this.value.toLowerCase().trim();
+            // Selecciona todas las filas de datos de la tabla (omitiendo el encabezado)
+            const filasTabla = document.querySelectorAll("table tbody tr");
+
+            filasTabla.forEach(fila => {
+                // Capturamos las celdas clave de la tabla basándonos en tu diseño actual:
+                // Celda 3: Mascota | Celda 4: Dueño | Celda 5: Motivo de consulta
+                const celdaMascota = fila.cells[3] ? fila.cells[3].textContent.toLowerCase() : "";
+                const celdaDueno   = fila.cells[4] ? fila.cells[4].textContent.toLowerCase() : "";
+                const celdaMotivo  = fila.cells[5] ? fila.cells[5].textContent.toLowerCase() : "";
+
+                // Si lo que escribió el usuario coincide con alguno de estos tres campos...
+                if (
+                    celdaMascota.includes(textoBusqueda) || 
+                    celdaDueno.includes(textoBusqueda) || 
+                    celdaMotivo.includes(textoBusqueda)
+                ) {
+                    fila.style.display = ""; // 👁️ Muestra la fila
+                } else {
+                    fila.style.display = "none"; // 🥷 Oculta la fila
+                }
+            });
+        });
+        console.log("🚀 ¡Buscador en tiempo real vinculado y listo!");
+    } else {
+        console.error("⚠️ No se encontró el campo input de búsqueda en el HTML.");
+    }
+});
     </script>
 </body>
 </html>
