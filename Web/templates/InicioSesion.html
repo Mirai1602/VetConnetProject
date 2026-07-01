@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - VetConnect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="contenedor-principal">
+    <div class="tarjeta-registro">
+      <h2>Iniciar Sesión</h2>
+      
+      <form action="/login" method="POST">
+        <div class="grupo-input">
+          <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+        </div>
+
+        <div class="grupo-input">
+          <input type="password" id="password" name="password" placeholder="Contraseña" required>
+        </div>
+
+        <div class="grupo-input">
+          <select id="tipo_usuario" name="tipo_usuario" required style="width: 100%; padding: 15px 20px; background-color: rgba(163, 244, 255, 0.1); border: 1px solid rgba(110, 132, 255, 0.2); border-radius: 20px; font-size: 15px; color: #111111; outline: none;">
+            <option value="veterinario">Soy Veterinario</option>
+            <option value="paciente">Soy Dueño de Mascota (Paciente)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-guardar">Ingresar</button>
+      </form>
+
+      <div class="acciones-veterinario">
+        <p style="color: #6e84ff; font-size: 14px;">¿No tienes cuenta? Regístrate:</p>
+        <div style="display: flex; gap: 10px; width: 100%; justify-content: center;">
+          <button type="button" class="btn-secundario" onclick="location.href='/registro-veterinario'">Veterinario</button>
+          <button type="button" class="btn-secundario" onclick="location.href='/registro-paciente'">Paciente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    :root {
+      --azul-oscuro: #1d26f3; 
+      --azul-medio: #6e84ff;  
+      --celeste: #a3f4ff;      
+      --blanco: #ffffff;
+      --texto-oscuro: #111111; 
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+    body { background-color: var(--celeste); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .contenedor-principal { width: 100%; max-width: 400px; padding: 20px; }
+    .tarjeta-registro { background-color: var(--blanco); border-radius: 35px; padding: 40px 30px; box-shadow: 0 15px 35px rgba(29, 38, 243, 0.1); text-align: center; }
+    .tarjeta-registro h2 { color: var(--azul-oscuro); font-size: 28px; font-weight: 500; margin-bottom: 30px; }
+    form { display: flex; flex-direction: column; gap: 15px; }
+    .grupo-input input { width: 100%; padding: 15px 20px; background-color: rgba(163, 244, 255, 0.1); border: 1px solid rgba(110, 132, 255, 0.2); border-radius: 20px; font-size: 15px; color: var(--texto-oscuro); outline: none; }
+    .btn-guardar { background-color: var(--azul-oscuro); color: white; border: none; padding: 16px; font-size: 16px; font-weight: 600; border-radius: 25px; cursor: pointer; margin-top: 10px; }
+    .acciones-veterinario { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(110, 132, 255, 0.1); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .btn-secundario { background: none; border: 1px solid var(--azul-medio); color: var(--azul-medio); padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 15px; cursor: pointer; }
+  </style>
+</body>
+</html>
