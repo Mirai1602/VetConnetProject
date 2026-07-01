@@ -144,35 +144,20 @@
             border: 1px solid rgba(197, 163, 255, 0.2);
         }
 
-        .table-responsive {
-            overflow-x: auto;
-        }
+  .table-responsive {
+  width: 100%;
+  overflow-x: auto;        /* activa scroll horizontal */
+  overflow-y: hidden;      /* oculta scroll vertical */
+  -webkit-overflow-scrolling: touch;
+}
 
-        .excel-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 14px;
-        }
+.excel-table th,
+.excel-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eeeeee;
+  white-space: nowrap;     /* evita que el texto se corte en varias líneas */
+}
 
-        .excel-table th {
-            background-color: #fcfbfa;
-            color: #444;
-            font-weight: 700;
-            padding: 16px;
-            border-bottom: 2px solid #FEF7CD; 
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .excel-table td {
-            padding: 16px;
-            border-bottom: 1px solid #edf2f7;
-            color: #555;
-            background-color: #ffffff;
-            vertical-align: middle;
-        }
 
         /* --- COLUMNA LATERAL (ESTADÍSTICAS) --- */
         .sidebar-section {
@@ -181,61 +166,72 @@
             gap: 20px;
         }
 
-        .filter-card {
-            background: #ffffff; 
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            padding: 24px;
-            border: 1px solid rgba(197, 163, 255, 0.2);
-        }
+       /* --- SIDEBAR ESTADÍSTICAS PACIENTES --- */
+.filter-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    padding: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    margin-bottom: 25px; /* Separación opcional */
+}
 
-        .filter-card h3 {
-            font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
+.filter-card h3 { 
+    font-weight: 700; 
+    font-size: 18px; 
+    margin-bottom: 8px; 
+}
 
-        .filter-desc {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
+.filter-desc { 
+    font-size: 13px; 
+    color: #777; 
+    margin-bottom: 20px; 
+    line-height: 1.4; 
+}
 
-        .status-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            background: #fdfdfd;
-            border: 1px solid #edf2f7;
-        }
+.status-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    border: 1px solid #edf2f7;
+}
 
-        .status-info {
-            display: flex;
-            flex-direction: column;
-        }
+.status-info { 
+    display: flex; 
+    flex-direction: column; 
+}
 
-        .status-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #666;
-        }
+.status-title { 
+    font-size: 13px; 
+    font-weight: 600; 
+    color: #666; 
+}
 
-        .status-count {
-            font-size: 22px;
-            font-weight: 900;
-            color: #111;
-            margin-top: 2px;
-        }
+.status-count { 
+    font-size: 24px; 
+    font-weight: 900; 
+    color: #111; 
+    margin-top: 2px; 
+}
 
-        .status-indicator {
-            width: 6px;
-            height: 35px;
-            border-radius: 10px;
-        }
+.status-indicator { 
+    width: 6px; 
+    height: 35px; 
+    border-radius: 10px; 
+}
+
+/* Colores personalizados para combinar con VetConnect */
+.indicator-felino { 
+    background-color: #7B2CBF; /* Morado/Lila oscuro */
+}
+
+.indicator-canino { 
+    background-color: #4A90E2; /* Azul/Lavanda suave */
+}
 
         .select-container {
             display: flex;
@@ -280,7 +276,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    display: none; /* 🌟 Cambiado a none por defecto */
+    display: none; 
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -397,6 +393,135 @@
                 width: 100%;
             }
         }
+
+/* --- ESTILOS DE BÚSQUEDA PERFECCIONADOS (ESTILO COMO CITASV) --- */
+
+   .search-container {
+            padding: 24px 24px 14px 24px;
+            background-color: #ffffff;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+        }
+     .search-box-wrapper::before {
+            content: "🔍";
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #a0aec0;
+            pointer-events: none;
+        }
+
+        #buscador-pacientes {
+            width: 100%;
+            padding: 12px 16px 12px 46px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            background-color: #f8f9fa;
+            border: 2px solid #edf2f7;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        #buscador-pacientes:focus {
+            background-color: #ffffff;
+            border-color: #2720FF;
+            box-shadow: 0 4px 12px rgba(39, 32, 255, 0.06);
+        }
+
+       .table-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap; /* evita que desaparezcan si no caben */
+}
+
+.table-actions button {
+  font-family: 'Nunito', sans-serif; /* misma fuente que todo el sistema */
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Botón Editar */
+.btn-editar-trigger {
+  background-color: #f39c12;
+}
+.btn-editar-trigger:hover {
+  background-color: #d68910;
+}
+
+/* Botón Diagnóstico */
+.btn-diagnostico-trigger {
+  background-color: #3498db;
+}
+.btn-diagnostico-trigger:hover {
+  background-color: #2e86c1;
+}
+
+/* Botón Eliminar */
+.btn-eliminar-trigger {
+  background-color: #e74c3c;
+}
+.btn-eliminar-trigger:hover {
+  background-color: #c0392b;
+}
+
+/* Botón Actualizar Cambios */
+.btn-guardar-paciente {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Estilo específico para el botón amarillo */
+.btn-guardar-paciente {
+  background-color: #f5b041; /* amarillo */
+}
+.btn-guardar-paciente:hover {
+  background-color: #d68910; /* tono más oscuro */
+}
+
+/* Botón Guardar Diagnóstico */
+.btn-guardar-diagnostico {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  background-color: #2980b9; /* azul */
+}
+.btn-guardar-diagnostico:hover {
+  background-color: #21618c; /* azul más oscuro */
+}
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -413,135 +538,136 @@
             <a href="{{ url_for('citas_paciente') }}" class="nav-link">Pacientes</a>
             <a href="#" class="nav-link">Mi Perfil</a>
         </div>
-    </div> <!-- Cierre que te faltaba de nav-inner -->
+    </div> 
 </nav>
 
-    <main class="portal-container">
-        <header class="portal-header">
-            <div>
-                <h1>Vistas de pacientes</h1>
-                <p>Puedes registrar y ver tus pacientes registrados.</p>
-            </div>
+<main class="portal-container">
+  <header class="portal-header">
+    <div>
+      <h1>Vistas de pacientes</h1>
+      <p>Puedes registrar y ver tus pacientes registrados.</p>
+    </div>
+    <button class="btn-nuevo-paciente" onclick="abrirModalNuevo()">+ Nuevo paciente</button>
+  </header>
 
-     <div class="search-container">
-                    <div class="search-box-wrapper">
-                        <input 
-                            type="text" 
-                            id="buscador-paciente" 
-                            placeholder="Buscar por paciente o dueño..."
-                            onkeyup="filtrarTablaCitas()"
-                        >
-                    </div>
-                </div>
-
-           <button class="btn-nuevo-paciente" onclick="abrirModalNuevo()">+ Nuevo paciente</button>
-        </header>
 
         <div class="portal-content" style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px;">
             
            <section class="excel-section" style="flex: 1; min-width: 0;">
                 <div class="table-responsive" style="width: 100%; overflow-x: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <table class="excel-table" style="width: 100%; border-collapse: collapse; min-width: 950px; table-layout: fixed;">
+                   <table class="excel-table" 
+       style="min-width: 1200px; border-collapse: collapse;">
+
                         <thead>
                          <tr style="background-color: #fafafa; border-bottom: 2px solid #eeeeee;">
                     <th style="width: 9%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Código</th>
-                    <th style="width: 10%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Mascota</th>
+                    <th style="width: 12%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Mascota</th>
                     <th style="width: 11%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Dueño</th>
+                                <th style="width: 10%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Telefono</th>
+                        <th style="width: 10%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Direccion</th>
+                          <th style="width: 10%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Correo</th>
                     <th style="width: 10%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Raza</th>
-                    <th style="width: 20%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">F. Nacimiento</th>
-                    <th style="width: 9%;  padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Género</th>
-                    <th style="width: 7%;  padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Peso</th>
-                    <th style="width: 10%;  padding: 15px 15px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Especie</th>
-                    <th style="width: 35%; padding: 15px 15px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: center;">Acciones</th>
+                    <th style="width: 18%; padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">F. Nacimiento</th>
+                    <th style="width: 10%;  padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Género</th>
+                    <th style="width: 13%;  padding: 15px 10px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Peso</th>
+                    <th style="width: 15%;  padding: 15px 15px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: left;">Especie</th>
+                    <th style="width: 25%; padding: 15px 15px; font-size: 13px; color: #4a4a4a; font-weight: 700; text-transform: uppercase; text-align: center;">Acciones</th>
                 </tr>
+
+                <section class="excel-section">
+  <!-- Buscador arriba de la tabla -->
+  <div class="search-container">
+    <div class="search-box-wrapper">
+      <input 
+        type="text" 
+        id="buscador-pacientes" 
+        placeholder="Buscar por paciente, dueño o raza..."
+      >
+    </div>
+  </div>
                         </thead>
                         <tbody id="tabla-pacientes-body">
-                            {% if mascotas %}
-                                {% for mascota in mascotas %}
-                                <tr>
-                                    <td>{{ mascota[0] }}</td> 
-                                    <td>{{ mascota[1] }}</td> 
-                                    <td>{{ mascota[2] }}</td> 
-                                    <td>{{ mascota[3] }}</td> 
-                                    <td>{{ mascota[4] }}</td> 
-                                    <td>{{ mascota[5] }}</td> 
-                                    <td>{{ mascota[6] }}</td> 
-                                    <td>{{ mascota[7] }}</td> 
-                                    <td>
-                                        <div class="table-actions" style="display: flex; gap: 8px; align-items: center; justify-content: center; white-space: nowrap;">
-                                            
-                                            <button type="button" class="btn-editar-trigger" 
-                                                    data-codigo="{{ mascota[0] }}"
-                                                    data-mascota="{{ mascota[1] }}"
-                                                    data-dueno="{{ mascota[2] }}"
-                                                    data-raza="{{ mascota[3] }}"
-                                                    data-fecha="{{ mascota[4] }}"
-                                                    data-genero="{{ mascota[5] }}"
-                                                    data-peso="{{ mascota[6] }}"
-                                                    data-especie="{{ mascota[7] }}"
-                                                    style="background-color: #f39c12; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: bold;">
-                                                Editar
-                                            </button>
-                                            
-                                            <button type="button" class="btn-diagnostico-trigger" 
-                                                    data-codigo="{{ mascota[0] }}"
-                                                    style="background-color: #3498db; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: bold;">
-                                                Diagnóstico
-                                            </button>
-                                            
-                                            <button type="button" class="btn-eliminar-trigger" 
-                                                    data-codigo="{{ mascota[0] }}"
-                                                    style="background-color: #c0392b; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: bold;">
-                                                Eliminar
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr class="sin-datos-row">
-                                    <td colspan="9" style="text-align: center; color: #999; padding: 50px; font-style: italic; font-size: 14px; background-color: #fafafa;">
-                                        No hay registros médicos cargados. Los datos de la mascota aparecerán aquí cuando los guardes en el formulario.
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        </tbody>      
+  {% if mascotas %}
+    {% for mascota in mascotas %}
+    <tr>
+    <td>{{ mascota[0] }}</td> <!-- Codigo -->
+<td>{{ mascota[1] }}</td> <!-- Mascota -->
+<td>{{ mascota[2] }}</td> <!-- Dueño -->
+<td>{{ mascota[8] }}</td> <!-- Teléfono -->
+<td>{{ mascota[9] }}</td> <!-- Dirección -->
+<td>{{ mascota[10] }}</td> <!-- Correo -->
+<td>{{ mascota[3] }}</td> <!-- Raza -->
+<td>{{ mascota[4] }}</td> <!-- F. Nacimiento -->
+<td>{{ mascota[5] }}</td> <!-- Género -->
+<td>{{ mascota[6] }}</td> <!-- Peso -->
+<td>{{ mascota[7] }}</td> <!-- Especie -->
+
+     <td>
+  <div class="table-actions" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+<button type="button" class="btn-editar-trigger"
+        data-codigo="{{ mascota[0] }}"
+        data-mascota="{{ mascota[1] }}"
+        data-dueno="{{ mascota[2] }}"
+        data-raza="{{ mascota[3] }}"
+        data-fecha="{{ mascota[4] }}"
+        data-genero="{{ mascota[5] }}"
+        data-peso="{{ mascota[6] }}"
+        data-especie="{{ mascota[7] }}"
+        data-telefono="{{ mascota[8] }}"
+        data-direccion="{{ mascota[9] }}"
+        data-correo="{{ mascota[10] }}">
+  Editar
+</button>
+
+    <button type="button" class="btn-diagnostico-trigger"
+            data-codigo="{{ mascota[0] }}">
+      Diagnóstico
+    </button>
+
+    <button type="button" class="btn-eliminar-trigger"
+            data-codigo="{{ mascota[0] }}">
+      Eliminar
+    </button>
+  </div>
+</td>
+
+    </tr>
+    {% endfor %}
+  {% else %}
+    <tr class="sin-datos-row">
+      <td colspan="12" style="text-align: center; color: #999; padding: 50px; font-style: italic; font-size: 14px; background-color: #fafafa;">
+        No hay registros médicos cargados. Los datos de la mascota aparecerán aquí cuando los guardes en el formulario.
+      </td>
+    </tr>
+  {% endif %}
+</tbody>
+    
                     </table>
                 </div>
             </section>
 
-          <aside class="sidebar-section" style="width: 280px; flex-shrink: 0;">
+         <aside class="sidebar-section">
     <div class="filter-card">
-        <h3>Estadísticas de Mascotas</h3>
-        <p class="filter-desc">Visualiza rápidamente la cantidad de pacientes registrados por especie.</p>
-        
+        <h3>Resumen de Pacientes</h3>
+        <p class="filter-desc">Cantidad total de mascotas registradas divididas por su especie principal.</p>
+
         <div class="status-box">
             <div class="status-info">
-                <span class="status-title">Perros Registrados</span>
-                <span class="status-count" id="contador-perros">{{ perros }}</span>
+                <span class="status-title">Felinos Registrados</span>
+                <h3 class="status-count" id="contador-felinos">0</h3>
             </div>
-            <div class="status-indicator" style="background-color: #2ec4b6;"></div> 
+            <div class="status-indicator indicator-felino"></div>
         </div>
 
         <div class="status-box">
             <div class="status-info">
-                <span class="status-title">Gatos Registrados</span>
-                <span class="status-count" id="contador-gatos">{{ gatos }}</span>
+                <span class="status-title">Caninos Registrados</span>
+                <h3 class="status-count" id="contador-caninos">0</h3>
             </div>
-            <div class="status-indicator" style="background-color: #f5b041;"></div> 
-        </div>
-
-        <div class="select-container">
-            <label for="filtro-especie" class="select-label">Filtrar Historial:</label>
-            <select id="filtro-especie" class="mini-barra-select" onchange="filtrarMascotas()">
-                <option value="todos">Ver Todos</option>
-                <option value="perro">Solo Perros</option>
-                <option value="gato">Solo Gatos</option>
-            </select>
+            <div class="status-indicator indicator-canino"></div>
         </div>
     </div>
 </aside>
-   </div>
 
         <div id="modalpaciente" class="modal-overlay">
             <div class="modal-content-box" style="max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
@@ -549,108 +675,172 @@
                 <h2>Registrar Nuevo Paciente</h2>
                 <p class="modal-subtitle">Por favor, rellene los datos de la mascota para el expediente médico:</p>
                 
-                <form id="form-nuevo-paciente" action="/guardar-mascota" method="POST" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                    <div class="modal-scroll-inputs" style="overflow-y: auto; padding-right: 8px; margin-bottom: 15px; flex: 1;">
-                        <div class="form-list-group">
-                            <label>1. Código de Mascota</label>
-                            <input type="text" id="input-codigo" name="codigo" placeholder="Ej. 7887678" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>2. Nombre de la Mascota / Paciente</label>
-                            <input type="text" id="input-mascota" name="nombre_mascota" placeholder="Ej. Mario" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>3. Nombre del Dueño</label>
-                            <input type="text" id="input-dueno" name="dueno" placeholder="Ej. Maximiliano perez" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>4. Raza</label>
-                            <input type="text" id="input-raza" name="raza" placeholder="Ej. Pastor Aleman" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>5. Fecha de nacimiento</label>
-                            <input type="date" id="input-fecha" name="fecha_nacimiento" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>6. Género</label>
-                            <select id="input-genero" name="genero" required>
-                                <option value="Macho">Macho</option>
-                                <option value="Hembra">Hembra</option>
-                            </select>
-                        </div>
-                        <div class="form-list-group">
-                            <label>7. Peso (en kg)</label>
-                            <input type="text" id="input-peso" name="peso" placeholder="Ej. 14.2" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>8. Especie</label>
-                            <select id="input-especie" name="especie" required>
-                                <option value="Perro">Perro</option>
-                                <option value="Gato">Gato</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-guardar-cita" style="width: 100%;">Guardar Paciente</button>
+                <form id="form-nuevo-paciente" action="/guardar-mascota" method="POST" 
+      style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+    <div class="modal-scroll-inputs" 
+         style="overflow-y: auto; padding-right: 8px; margin-bottom: 15px; flex: 1;">
+
+        <div class="form-list-group">
+            <label>1. Código de Mascota</label>
+            <input type="text" id="input-codigo" name="codigo" placeholder="Ej. 7887678" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>2. Nombre de la Mascota / Paciente</label>
+            <input type="text" id="input-mascota" name="nombre_mascota" placeholder="Ej. Mario" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>3. Nombre del Dueño</label>
+            <input type="text" id="input-dueno" name="dueno" placeholder="Ej. Maximiliano Pérez" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>4. Raza</label>
+            <input type="text" id="input-raza" name="raza" placeholder="Ej. Pastor Alemán" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>5. Fecha de nacimiento</label>
+            <input type="date" id="input-fecha" name="fecha_nacimiento" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>6. Género</label>
+            <select id="input-genero" name="genero" required>
+                <option value="Macho">Macho</option>
+                <option value="Hembra">Hembra</option>
+            </select>
+        </div>
+
+        <div class="form-list-group">
+            <label>7. Peso (en kg)</label>
+            <input type="text" id="input-peso" name="peso" placeholder="Ej. 14.2" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>8. Especie</label>
+            <select id="input-especie" name="especie" required>
+                <option value="Perro">Canino</option>
+                <option value="Gato">Felino</option>
+            </select>
+        </div>
+
+        <div class="form-list-group">
+            <label>9. Teléfono del Dueño</label>
+            <input type="text" id="input-telefono" name="telefono" placeholder="Ej. 88889999" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>10. Dirección del Dueño</label>
+            <input type="text" id="input-direccion" name="direccion" placeholder="Ej. Colonia Centro, Managua" required>
+        </div>
+
+        <div class="form-list-group">
+            <label>11. Correo del Dueño</label>
+            <input type="email" id="input-correo" name="correo" placeholder="ejemplo@email.com" required>
+        </div>
+    </div>
+
+                    <button type="submit" class="btn-guardar-Paciente" style="width: 100%;">Guardar Paciente</button>
                 </form> 
             </div>
         </div>
 
         <div id="modaleditar" class="modal-overlay">
-            <div class="modal-content-box" style="max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
-                <span class="btn-cerrar-modal" onclick="cerrarModalEditar()">&times;</span>
-                <h2>Editar Datos del Paciente</h2>
-                <p class="modal-subtitle">Modifique la información necesaria del expediente médico:</p>
-                
-                <form id="form-editar-paciente" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                    <div class="modal-scroll-inputs" style="overflow-y: auto; padding-right: 8px; margin-bottom: 15px; flex: 1;">
-                        <div class="form-list-group">
-                            <label>Código de Mascota (No editable)</label>
-                            <input type="text" id="edit-codigo" name="codigo" readonly style="background-color: #f5f5f5; color: #777;">
-                        </div>
-                        <div class="form-list-group">
-                            <label>Nombre de la Mascota</label>
-                            <input type="text" id="edit-mascota" name="nombre_mascota" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>Nombre del Dueño</label>
-                            <input type="text" id="edit-dueno" name="dueno" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>Raza</label>
-                            <input type="text" id="edit-raza" name="raza" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>Fecha de nacimiento</label>
-                            <input type="date" id="edit-fecha" name="fecha_nacimiento" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>Género</label>
-                            <select id="edit-genero" name="genero" required>
-                                <option value="Macho">Macho</option>
-                                <option value="Hembra">Hembra</option>
-                            </select>
-                        </div>
-                        <div class="form-list-group">
-                            <label>Peso (en kg)</label>
-                            <input type="text" id="edit-peso" name="peso" required>
-                        </div>
-                        <div class="form-list-group">
-                            <label>Especie</label>
-                            <select id="edit-especie" name="especie" required>
-                                <option value="Perro">Perro</option>
-                                <option value="Gato">Gato</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-guardar-cita" style="width: 100%; background-color: #f5b041;">Actualizar Cambios</button>
-                </form>
-            </div>
+    <div class="modal-content-box" style="max-width: 700px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; font-family: 'Nunito', sans-serif;">
+        <span class="btn-cerrar-modal" onclick="cerrarModalEditar()">&times;</span>
+
+        <div style="margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #1a202c; font-size: 24px; font-weight: 900; letter-spacing: -0.5px;">Editar Datos del Paciente</h2>
+            <p style="color: #718096; font-size: 14px; margin: 6px 0 0 0; font-weight: 600;">Modifique la información necesaria del expediente médico:</p>
         </div>
+
+        <form id="form-editar-paciente" action="/editar-mascota" method="POST" style="display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-right: 6px; max-height: 70vh;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+                <!-- ===================== COLUMNA 1: MASCOTA ===================== -->
+                <div style="display: flex; flex-direction: column; gap: 14px; background: #f8f5ff; border-left: 4px solid #8820ff; border-radius: 12px; padding: 18px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 800; color: #8820ff; text-transform: uppercase; letter-spacing: 0.5px;">Datos de la Mascota</h3>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Código (No editable)</label>
+                        <input type="text" id="edit-codigo" name="codigo" readonly style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; background-color: #f5f5f5; color: #777;">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Nombre de la Mascota</label>
+                        <input type="text" id="edit-mascota" name="nombre_mascota" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Especie</label>
+                        <select id="edit-especie" name="especie" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
+                            <option value="Perro">Canino</option>
+                            <option value="Gato">Felino</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Raza</label>
+                        <input type="text" id="edit-raza" name="raza" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Género</label>
+                        <select id="edit-genero" name="genero" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
+                            <option value="Macho">Macho</option>
+                            <option value="Hembra">Hembra</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Peso (kg)</label>
+                        <input type="text" id="edit-peso" name="peso" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Fecha de Nacimiento</label>
+                        <input type="date" id="edit-fecha" name="fecha_nacimiento" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+                </div>
+
+               <!-- ===================== COLUMNA 2: DUEÑO ===================== -->
+                <div style="display: flex; flex-direction: column; gap: 14px; background: #fff8ea; border-left: 4px solid #f5b041; border-radius: 12px; padding: 18px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 800; color: #d68910; text-transform: uppercase; letter-spacing: 0.5px;">Datos del Dueño</h3>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Nombre del Dueño</label>
+                        <input type="text" id="edit-dueno" name="dueno" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Teléfono</label>
+                        <input type="text" id="edit-telefono" name="telefono" placeholder="Ej. 88889999" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Correo</label>
+                        <input type="email" id="edit-correo" name="correo" placeholder="ejemplo@email.com" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Dirección</label>
+                        <input type="text" id="edit-direccion" name="direccion" placeholder="Ej. Colonia Centro, Managua" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;">
+                    </div>
+                </div>
+                 </div>
+
+            <button type="submit" class="btn-guardar-paciente" style="width: 100%; background-color: #f5b041; font-family: 'Nunito', sans-serif; font-weight: 700;">Actualizar Cambios</button>
+        </form>
+    </div>
+</div>
 
         <div id="modaldiagnostico" class="modal-overlay">
             <div class="modal-content-box" style="max-width: 450px;">
                 <span class="btn-cerrar-modal" onclick="cerrarModalDiagnostico()">&times;</span>
-                <h2 style="color: #2980b9;">🩺 Registrar Diagnóstico</h2>
+                <h2 style="color: #2980b9;"> Registrar Diagnóstico</h2>
                 <p class="modal-subtitle">Mascota seleccionada: <span id="diag-codigo-display" style="font-weight: bold; color: #333;"></span></p>
                 
                 <form id="form-diagnostico" style="margin-top: 15px;">
@@ -668,7 +858,7 @@
 
                     <div style="display: flex; gap: 10px; justify-content: flex-end;">
                         <button type="button" class="btn-confirm-cancel" onclick="cerrarModalDiagnostico()">Cancelar</button>
-                        <button type="submit" class="btn-guardar-cita" style="width: auto; padding: 10px 20px; background-color: #2980b9; margin-top: 0;">Guardar Diagnóstico</button>
+                        <button type="submit" class="btn-guardar-diagnostico" style="width: auto; padding: 10px 20px; background-color: #2980b9; margin-top: 0;">Guardar Diagnóstico</button>
                     </div>
                 </form>
             </div>
@@ -686,180 +876,139 @@
         </div>
 
        <div id="modalnuevo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(2px);">
-    <div style="background: white; padding: 30px; border-radius: 16px; width: 550px; max-height: 90vh; box-shadow: 0 15px 35px rgba(0,0,0,0.1); display: flex; flex-direction: column; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; position: relative;">
-        
+    <div style="background: white; padding: 30px; border-radius: 16px; width: 700px; max-width: 95%; max-height: 90vh; box-shadow: 0 15px 35px rgba(0,0,0,0.1); display: flex; flex-direction: column; font-family: 'Nunito', sans-serif; position: relative; overflow: hidden;">
+
         <button type="button" onclick="cerrarModalNuevo()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; color: #a0aec0; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#4a5568'" onmouseout="this.style.color='#a0aec0'">✕</button>
 
         <div style="margin-bottom: 20px;">
-            <h2 style="margin: 0; color: #1a202c; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Registrar Nuevo Paciente</h2>
-            <p style="color: #718096; font-size: 14px; margin: 6px 0 0 0;">Introduce los datos de la mascota para guardarla en el sistema.</p>
+            <h2 style="margin: 0; color: #1a202c; font-size: 24px; font-weight: 900; letter-spacing: -0.5px;">Registrar Nuevo Paciente</h2>
+            <p style="color: #718096; font-size: 14px; margin: 6px 0 0 0; font-weight: 600;">Introduce los datos de la mascota y su dueño para guardarlos en el sistema.</p>
         </div>
-        
-        <form action="/guardar-mascota" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
-            
-            <div style="display: flex; gap: 16px;">
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Nombre de la Mascota</label>
-                    <input type="text" name="nombre_mascota" placeholder="Ej. Lani" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none; background-color: #fff;" required>
+
+        <form action="/guardar-mascota" method="POST" style="display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-right: 6px; max-height: 70vh;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+                <!-- ===================== COLUMNA 1: MASCOTA ===================== -->
+                <div style="display: flex; flex-direction: column; gap: 14px; background: #f8f5ff; border-left: 4px solid #8820ff; border-radius: 12px; padding: 18px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 800; color: #8820ff; text-transform: uppercase; letter-spacing: 0.5px;">Datos de la Mascota</h3>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Nombre de la Mascota</label>
+                        <input type="text" name="nombre_mascota" placeholder="Ej. Lani" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none; background-color: #fff;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Especie</label>
+                        <select name="especie" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
+                            <option value="" disabled selected>Selecciona...</option>
+                            <option value="Canino">Canino</option>
+                            <option value="Felino">Felino</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Raza</label>
+                        <input type="text" name="raza" placeholder="Ej. Poodle, Siamés" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Género</label>
+                        <select name="genero" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
+                            <option value="" disabled selected>Selecciona...</option>
+                            <option value="Macho">Macho</option>
+                            <option value="Hembra">Hembra</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Peso (kg)</label>
+                        <input type="number" step="0.01" name="peso" placeholder="0.00" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Fecha de Nacimiento</label>
+                        <input type="date" name="fecha_nacimiento" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
                 </div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Nombre del Dueño</label>
-                    <input type="text" name="dueno" placeholder="Nombre completo" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none; background-color: #fff;" required>
+
+                <!-- ===================== COLUMNA 2: DUEÑO ===================== -->
+                <div style="display: flex; flex-direction: column; gap: 14px; background: #fff8ea; border-left: 4px solid #f5b041; border-radius: 12px; padding: 18px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 800; color: #d68910; text-transform: uppercase; letter-spacing: 0.5px;">Datos del Dueño</h3>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Nombre del Dueño</label>
+                        <input type="text" name="dueno" placeholder="Nombre completo" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none; background-color: #fff;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Teléfono</label>
+                        <input type="text" name="telefono" placeholder="Ej. 88889999" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Correo</label>
+                        <input type="email" name="correo" placeholder="ejemplo@email.com" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 13px; font-weight: 700; color: #2d3748;">Dirección</label>
+                        <input type="text" name="direccion" placeholder="Ej. Colonia Centro, Managua" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; color: #2d3748; outline: none;" required>
+                    </div>
                 </div>
+
             </div>
 
-            <div style="display: flex; gap: 16px;">
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Especie</label>
-                    <select name="especie" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
-                        <option value="" disabled selected>Selecciona...</option>
-                        <option value="Canino">Canino</option>
-                        <option value="Felino">Felino</option>
-                        <option value="Ave">Ave</option>
-                        <option value="Roedor">Roedor</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Raza</label>
-                    <input type="text" name="raza" placeholder="Ej. Poodle, Siamés" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none;" required>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 16px;">
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Género</label>
-                    <select name="genero" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; background-color: white; cursor: pointer; outline: none;" required>
-                        <option value="" disabled selected>Selecciona...</option>
-                        <option value="Macho">Macho</option>
-                        <option value="Hembra">Hembra</option>
-                    </select>
-                </div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Peso (kg)</label>
-                    <input type="number" step="0.01" name="peso" placeholder="0.00" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none;" required>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-                <label style="font-size: 14px; font-weight: 600; color: #2d3748;">Fecha de Nacimiento</label>
-                <input type="date" name="fecha_nacimiento" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; outline: none;" required>
-            </div>
-
-            <div style="display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end;">
-                <button type="button" onclick="cerrarModalNuevo()" style="background: #cbd5e0; color: #4a5568; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='#b2bfd2'" onmouseout="this.style.background='#cbd5e0'">Cancelar</button>
-                <button type="submit" style="background: #2516fa; color: white; border: none; padding: 12px 28px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 22, 250, 0.2); transition: background 0.2s;" onmouseover="this.style.background='#1a0ee0'" onmouseout="this.style.background='#2516fa'">Guardar Paciente</button>
+            <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 4px;">
+                <button type="button" onclick="cerrarModalNuevo()" style="background: #cbd5e0; color: #4a5568; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 700; transition: background 0.2s;" onmouseover="this.style.background='#b2bfd2'" onmouseout="this.style.background='#cbd5e0'">Cancelar</button>
+                <button type="submit" style="background: #2516fa; color: white; border: none; padding: 12px 28px; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 700; box-shadow: 0 4px 12px rgba(37, 22, 250, 0.2); transition: background 0.2s;" onmouseover="this.style.background='#1a0ee0'" onmouseout="this.style.background='#2516fa'">Guardar Paciente</button>
             </div>
         </form>
     </div>
-</div>
 </div>
         </div>
     </main>
 
   <script>
-    function filtrarMascotas() {
-        var filtro = document.getElementById("filtro-especie").value;
-        var filas = document.querySelectorAll("table tbody tr");
+ function filtrarMascotas() {
+    var filtro = document.getElementById("filtro-especie").value;
+    var filas = document.querySelectorAll("#tabla-pacientes-body tr:not(.sin-datos-row)");
+
+    filas.forEach(function(fila) {
+        // CORREGIDO: apuntamos a cells[4] que es el campo Especie real
+        var celdaEspecie = fila.cells[4];
         
-        if (filas.length === 0) {
-            filas = document.querySelectorAll("table tr");
-        }
+        if (celdaEspecie) {
+            var textoEspecie = celdaEspecie.textContent.toLowerCase().trim();
 
-        filas.forEach(function(fila) {
-            if (fila.querySelector("th")) return;
-
-            // Buscamos la celda número 7 (Especie)
-            var celdaEspecie = fila.getElementsByTagName("td")[7];
-            
-            if (celdaEspecie) {
-                var textoEspecie = celdaEspecie.textContent || celdaEspecie.innerText;
-                textoEspecie = textoEspecie.toLowerCase().trim();
-
-                if (filtro === "todos") {
-                    fila.style.display = ""; 
-                } else if (filtro === "perro" && (textoEspecie.includes("perro") || textoEspecie.includes("canino"))) {
-                    fila.style.display = ""; 
-                } else if (filtro === "gato" && (textoEspecie.includes("gato") || textoEspecie.includes("felino"))) {
-                    fila.style.display = ""; 
-                } else {
-                    fila.style.display = "none"; 
-                }
+            if (filtro === "todos") {
+                fila.style.display = ""; 
+            } else if (filtro === "perro" && (textoEspecie.includes("perro") || textoEspecie.includes("canino"))) {
+                fila.style.display = ""; 
+            } else if (filtro === "gato" && (textoEspecie.includes("gato") || textoEspecie.includes("felino"))) {
+                fila.style.display = ""; 
+            } else {
+                fila.style.display = "none"; 
             }
-        });
-    }
+        }
+    });
 
-
-function abrirModalNuevo() {
-    // Busca tu modal por su ID original
-    const modal = document.getElementById("modalnuevo") || document.getElementById("modalregistrar");
-    if (modal) {
-        modal.style.display = "flex";
-    }
+    // Actualiza los contadores del resumen lateral tras filtrar
+    actualizarContadores();
 }
-    
+    // --- CONTROL DE MODALES (NUEVO REGISTRO) ---
+    function abrirModalNuevo() {
+        const modal = document.getElementById("modalnuevo") || document.getElementById("modalregistrar");
+        if (modal) {
+            modal.style.display = "flex";
+        }
+    }
+        
     function cerrarModalNuevo() {
         const modal = document.getElementById("modalnuevo") || document.getElementById("modalregistrar");
         if (modal) modal.style.display = "none";
     }
 
-    // ==========================================
-    // Escuchas dinámicas para capturar los datos de la tabla
-    // ==========================================
-    document.addEventListener("DOMContentLoaded", function () {
-        
-        // 2. DETECTOR PARA LOS BOTONES DE EDITAR
-        document.querySelectorAll(".btn-editar-trigger").forEach(boton => {
-            boton.addEventListener("click", function () {
-                // Extrae los datos desde las propiedades data- de tu tabla
-                const codigo = this.getAttribute("data-codigo");
-                const mascota = this.getAttribute("data-mascota");
-                const dueno = this.getAttribute("data-dueno");
-                const raza = this.getAttribute("data-raza");
-                const fecha = this.getAttribute("data-fecha");
-                const genero = this.getAttribute("data-genero");
-                const peso = this.getAttribute("data-peso");
-                const especie = this.getAttribute("data-especie");
-
-                // Inyecta los valores dentro de los inputs de tu formulario de edición
-                if (document.getElementById("edit-codigo")) document.getElementById("edit-codigo").value = codigo;
-                if (document.getElementById("edit-mascota")) document.getElementById("edit-mascota").value = mascota;
-                if (document.getElementById("edit-dueno")) document.getElementById("edit-dueno").value = dueno;
-                if (document.getElementById("edit-raza")) document.getElementById("edit-raza").value = raza;
-                if (document.getElementById("edit-fecha")) document.getElementById("edit-fecha").value = fecha;
-                if (document.getElementById("edit-genero")) document.getElementById("edit-genero").value = genero;
-                if (document.getElementById("edit-peso")) document.getElementById("edit-peso").value = peso;
-                if (document.getElementById("edit-especie")) document.getElementById("edit-especie").value = especie;
-
-                // Muestra el modal
-                document.getElementById("modaleditar").style.display = "flex";
-            });
-        });
-
-        // 3. DETECTOR PARA LOS BOTONES DE DIAGNÓSTICO
-        document.querySelectorAll(".btn-diagnostico-trigger").forEach(boton => {
-            boton.addEventListener("click", function () {
-                const codigo = this.getAttribute("data-codigo");
-
-                if (document.getElementById("diag-codigo-display")) document.getElementById("diag-codigo-display").innerText = codigo;
-                if (document.getElementById("diag-codigo-mascota")) document.getElementById("diag-codigo-mascota").value = codigo;
-
-                document.getElementById("modaldiagnostico").style.display = "flex";
-            });
-        });
-
-        // 4. DETECTOR PARA LOS BOTONES DE ELIMINAR
-        document.querySelectorAll(".btn-eliminar-trigger").forEach(boton => {
-            boton.addEventListener("click", function () {
-                window.codigoMascotaAEliminar = this.getAttribute("data-codigo");
-                document.getElementById("modaleliminar").style.display = "flex";
-            });
-        });
-    });
-
-    // ==========================================
-    // Funciones globales de cierre y confirmación
-    // ==========================================
     function cerrarModalEditar() {
         document.getElementById("modaleditar").style.display = "none";
     }
@@ -874,45 +1023,174 @@ function abrirModalNuevo() {
 
     function confirmarBorradoFila() {
         if (window.codigoMascotaAEliminar) {
-            // Envía la petición de borrado directo a la ruta creada en Flask
             window.location.href = "/eliminar-mascota/" + window.codigoMascotaAEliminar;
         }
     }
 
-    // 🔍 SISTEMA DE BÚSQUEDA EN TIEMPO REAL
-document.addEventListener("DOMContentLoaded", function () {
-    const inputBuscar = document.querySelector('input[placeholder*="Buscar por"]');
-    
+    // --- INICIALIZACIÓN DE DETECTORES Y EVENTOS DINÁMICOS ---
+    document.addEventListener("DOMContentLoaded", function () {
+        
+        // 1. CALCULO INICIAL DE CONTADORES AL CARGAR LA PÁGINA
+        actualizarContadores();
+
+        // 2. DETECTOR PARA LOS BOTONES DE EDITAR
+        document.querySelectorAll(".btn-editar-trigger").forEach(boton => {
+            boton.addEventListener("click", function () {
+                const codigo = this.getAttribute("data-codigo");
+                const mascota = this.getAttribute("data-mascota");
+                const dueno = this.getAttribute("data-dueno");
+                const raza = this.getAttribute("data-raza");
+                const fecha = this.getAttribute("data-fecha");
+                const genero = this.getAttribute("data-genero");
+                const peso = this.getAttribute("data-peso");
+                const especie = this.getAttribute("data-especie");
+                const telephone = this.getAttribute("data-telefono");
+                const direccion = this.getAttribute("data-direccion");
+                const correo = this.getAttribute("data-correo");
+
+                const limpiar = (valor) => {
+                    if (!valor) return "";
+                    const invalidos = ["Sin Dueño Asignado", "No registrado", "No registrada"];
+                    return invalidos.includes(valor) ? "" : valor;
+                };
+
+                if (document.getElementById("edit-codigo")) document.getElementById("edit-codigo").value = codigo;
+                if (document.getElementById("edit-mascota")) document.getElementById("edit-mascota").value = mascota;
+                if (document.getElementById("edit-dueno")) document.getElementById("edit-dueno").value = limpiar(dueno);
+                if (document.getElementById("edit-raza")) document.getElementById("edit-raza").value = raza;
+                if (document.getElementById("edit-fecha")) document.getElementById("edit-fecha").value = fecha;
+                if (document.getElementById("edit-genero")) document.getElementById("edit-genero").value = genero;
+                if (document.getElementById("edit-peso")) document.getElementById("edit-peso").value = peso;
+                if (document.getElementById("edit-especie")) document.getElementById("edit-especie").value = especie;
+                if (document.getElementById("edit-telefono")) document.getElementById("edit-telefono").value = limpiar(telephone);
+                if (document.getElementById("edit-direccion")) document.getElementById("edit-direccion").value = limpiar(direccion);
+                if (document.getElementById("edit-correo")) document.getElementById("edit-correo").value = limpiar(correo);
+
+                document.getElementById("modaleditar").style.display = "flex";
+            });
+        });
+
+        // 3. DETECTOR PARA LOS BOTONES DE DIAGNÓSTICO
+        document.querySelectorAll(".btn-diagnostico-trigger").forEach(boton => {
+            boton.addEventListener("click", function () {
+                const codigo = this.getAttribute("data-codigo");
+                if (document.getElementById("diag-codigo-display")) document.getElementById("diag-codigo-display").innerText = codigo;
+                if (document.getElementById("diag-codigo-mascota")) document.getElementById("diag-codigo-mascota").value = codigo;
+                document.getElementById("modaldiagnostico").style.display = "flex";
+            });
+        });
+
+        // 4. SUBMIT DEL FORMULARIO DE DIAGNÓSTICO
+        const formDiag = document.getElementById("form-diagnostico");
+        if (formDiag) {
+            formDiag.addEventListener("submit", function (e) {
+                e.preventDefault(); 
+
+                const codigo     = document.getElementById("diag-codigo-mascota").value;
+                const descripcion = document.getElementById("diag-descripcion").value.trim();
+                const tratamiento = document.getElementById("diag-treatment") || document.getElementById("diag-tratamiento");
+                const tratamientoVal = tratamiento ? tratamiento.value.trim() : "";
+
+                if (!codigo || !descripcion || !tratamientoVal) {
+                    alert("Por favor completa todos los campos del diagnóstico.");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("codigo_mascota", codigo);
+                formData.append("descripcion", descripcion);
+                formData.append("tratamiento", tratamientoVal);
+
+                fetch("/guardar-diagnostico", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok || response.redirected) {
+                        document.getElementById("diag-descripcion").value = "";
+                        if (tratamiento) tratamiento.value = "";
+                        cerrarModalDiagnostico();
+                        alert("Diagnóstico guardado correctamente.");
+                    } else {
+                        alert("Error al guardar el diagnóstico.");
+                    }
+                })
+                .catch(() => alert("No se pudo conectar con el servidor."));
+            });
+        }
+
+        // 5. DETECTOR PARA LOS BOTONES DE ELIMINAR
+        document.querySelectorAll(".btn-eliminar-trigger").forEach(boton => {
+            boton.addEventListener("click", function () {
+                window.codigoMascotaAEliminar = this.getAttribute("data-codigo");
+                document.getElementById("modaleliminar").style.display = "flex";
+            });
+        });
+    });
+
+    // --- SISTEMA DE BÚSQUEDA EN TIEMPE REAL (MANTIENE CONTADORES DINÁMICOS) ---
+    const inputBuscar = document.getElementById('buscador-pacientes');
     if (inputBuscar) {
         inputBuscar.addEventListener("input", function () {
             const textoBusqueda = this.value.toLowerCase().trim();
-            // Selecciona todas las filas de datos de la tabla (omitiendo el encabezado)
-            const filasTabla = document.querySelectorAll("table tbody tr");
+            const filasTabla = document.querySelectorAll("#tabla-pacientes-body tr:not(.sin-datos-row)");
 
             filasTabla.forEach(fila => {
-                // Capturamos las celdas clave de la tabla basándonos en tu diseño actual:
-                // Celda 3: Mascota | Celda 4: Dueño | Celda 5: Motivo de consulta
-                const celdaMascota = fila.cells[3] ? fila.cells[3].textContent.toLowerCase() : "";
-                const celdaDueno   = fila.cells[4] ? fila.cells[4].textContent.toLowerCase() : "";
-                const celdaMotivo  = fila.cells[5] ? fila.cells[5].textContent.toLowerCase() : "";
+                const celdaMascota = fila.cells[1] ? fila.cells[1].textContent.toLowerCase() : "";
+                const celdaDueno   = fila.cells[2] ? fila.cells[2].textContent.toLowerCase() : "";
+                const celdaRaza    = fila.cells[3] ? fila.cells[3].textContent.toLowerCase() : "";
 
-                // Si lo que escribió el usuario coincide con alguno de estos tres campos...
                 if (
                     celdaMascota.includes(textoBusqueda) || 
                     celdaDueno.includes(textoBusqueda) || 
-                    celdaMotivo.includes(textoBusqueda)
+                    celdaRaza.includes(textoBusqueda)
                 ) {
-                    fila.style.display = ""; // 👁️ Muestra la fila
+                    fila.style.display = ""; 
                 } else {
-                    fila.style.display = "none"; // 🥷 Oculta la fila
+                    fila.style.display = "none"; 
                 }
             });
+
+            // Re-calcula los animales visibles en pantalla en tiempo real al escribir
+            actualizarContadores();
         });
-        console.log("🚀 ¡Buscador en tiempo real vinculado y listo!");
+        console.log("¡Buscador de la vista de Pacientes listo y vinculado!");
     } else {
-        console.error("⚠️ No se encontró el campo input de búsqueda en el HTML.");
+        console.error("No se encontró el input con id 'buscador-pacientes'.");
     }
-});
-    </script>
+
+    // --- FUNCIÓN MATRIZ DE CONTADORES EN TIEMPO REAL ---
+function actualizarContadores() {
+    // Selecciona todas las filas dinámicas de tu tabla
+    const filas = document.querySelectorAll("#tabla-pacientes-body tr:not(.sin-datos-row)");
+    let felinos = 0;
+    let caninos = 0;
+
+    filas.forEach(fila => {
+        // Solo contamos los elementos que no están ocultos por filtros o búsquedas
+        if (fila.style.display !== "none") {
+            // CORREGIDO: La columna de 'Especie' es la posición 4 en tu tabla real (Código[0], Mascota[1], Dueño[2], Raza[3], Especie[4])
+            const celdaEspecie = fila.cells[4];
+            
+            if (celdaEspecie) {
+                const textoEspecie = celdaEspecie.textContent.toLowerCase().trim();
+                
+                if (textoEspecie.includes("gato") || textoEspecie.includes("felino")) {
+                    felinos++;
+                } else if (textoEspecie.includes("perro") || textoEspecie.includes("canino")) {
+                    caninos++;
+                }
+            }
+        }
+    });
+
+    // Vinculación exacta a las IDs de tu panel Resumen de Pacientes lateral
+    const txtFelinos = document.getElementById("contador-felinos") || document.getElementById("contador-gatos");
+    const txtCaninos = document.getElementById("contador-caninos") || document.getElementById("contador-perros");
+
+    if (txtFelinos) txtFelinos.textContent = felinos;
+    if (txtCaninos) txtCaninos.textContent = caninos;
+}
+</script>
 </body>
 </html>

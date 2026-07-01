@@ -5,198 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
     <title>VetConnect - Panel de Citas</title>
-</head>
-<body>
 
-   <nav class="navbar">
-    <div class="nav-inner">
-        <div class="nav-brand">
-            <div class="nav-icon">V</div>
-            <span>VetConnect Panel</span>
-        </div> <!-- Cierre correcto de nav-brand -->
-
-        <div class="nav-links" style="margin-left: auto;">
-            <a href="{{ url_for('citas_veterinario') }}" class="nav-link active">Citas</a>
-            <a href="{{ url_for('citas_paciente') }}" class="nav-link">Pacientes</a>
-            <a href="#" class="nav-link">Mi Perfil</a>
-        </div>
-    </div> <!-- Cierre que te faltaba de nav-inner -->
-</nav>
-
-    <main class="portal-container">
-        <header class="portal-header">
-            <div>
-                <h1>Panel de Control de Citas</h1>
-                <p>Gestiona los horarios, pacientes y estados de tus consultas médicas.</p>
-            </div>
-            <button class="btn-nueva-cita" onclick="abrirModal()">+ Nueva Cita</button>
-        </header>
-
-        <div class="portal-content">
-            
-            <section class="excel-section">
-                <div class="search-container">
-                    <div class="search-box-wrapper">
-                        <input 
-                            type="text" 
-                            id="buscador-citas" 
-                            placeholder="Buscar por paciente, dueño o motivo de consulta..."
-                            onkeyup="filtrarTablaCitas()"
-                        >
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="excel-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Hora</th>
-                                <th>Paciente / Mascota</th>
-                                <th>Dueño</th>
-                                <th>Motivo de Consulta</th>
-                                <th>Estado (Toca para cambiar)</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                    <tbody id="tabla-citas-body">
-    {% if citas %}
-        {% for cita in citas %}
-            {% set estado = cita[6] %}
-            {% set clase_badge = 'badge-hecha' if estado == 'Hecha' else 'badge-pendiente' %}
-
-            <tr>
-                <td>{{ cita[0] }}</td>
-                <td class="edit-fecha">{{ cita[1] }}</td>
-                <td class="edit-hora">{{ cita[2] }}</td>
-                <td class="edit-mascota">{{ cita[3] }}</td>
-                <td class="edit-dueno">{{ cita[4] }}</td>
-                <td class="edit-motivo">{{ cita[5] }}</td>
-                <td class="celda-estado">
-                    <span class="badge {{ clase_badge }}" onclick="alternarEstadoDirecto(this)">
-                        {{ estado }}
-                    </span>
-                </td>
-                <td>
-                    <div class="actions-wrapper">
-                        <button class="btn-editar-fila" onclick="editarFila(this)">Editar</button>
-                        <button class="btn-eliminar-fila" onclick="abrirModalEliminar(this)">Eliminar</button>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-    {% else %}
-        <tr class="sin-datos-row">
-            <td colspan="8" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
-                No hay citas registradas en este momento.
-            </td>
-        </tr>
-    {% endif %}
-</tbody>           </table>
-                </div>
-            </section>
-
-            <aside class="sidebar-section">
-                <div class="filter-card">
-                    <h3>Resumen de Estados</h3>
-                    <p class="filter-desc">Filtra o revisa las consultas delimitadas por su progreso actual.</p>
-                    
-                    <div class="status-box box-pendientes">
-                        <div class="status-info">
-                            <span class="status-title">Citas Pendientes</span>
-                            <span class="status-count" id="contador-pendientes">0</span>
-                        </div>
-                        <div class="status-indicator indicator-pendiente"></div>
-                    </div>
-
-                    <div class="status-box box-hechas">
-                        <div class="status-info">
-                            <span class="status-title">Citas Hechas</span>
-                            <span class="status-count" id="contador-hechas">0</span>
-                        </div>
-                        <div class="status-indicator indicator-hecha"></div>
-                    </div>
-
-                    <div class="select-container">
-                        <label for="filtro-citas" class="select-label">Filtrar por:</label>
-                        <select id="filtro-citas" class="mini-barra-select" onchange="filtrarPorEstado()">
-                            <option value="todas">Ver Todas</option>
-                            <option value="Pendiente">Solo Pendientes</option>
-                            <option value="Hecha">Solo Hechas</option>
-                        </select>
-                    </div>
-                </div>
-            </aside>
-
-        </div>
-
-   <div id="modalCita" class="modal-overlay">
-    <div class="modal-content-box">
-        <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
-        <h2>Registrar Nueva Cita</h2>
-        <p class="modal-subtitle">Por favor rellene el formulario basado en el índice de la tabla:</p>
-        
-        <form id="form-nueva-cita" action="/guardar-cita" method="POST">
-            
-            <div class="form-list-group">
-                <label>1. Fecha de Consulta</label>
-                <input type="date" id="input-fecha" name="fecha_cita" required>
-            </div>
-            
-            <div class="form-list-group">
-                <label>2. Hora de Cita</label>
-                <input type="time" id="input-hora" name="hora_cita" required>
-            </div>
-            
-        <div class="form-list-group">
-    <label>3. Seleccionar Paciente / Mascota</label>
-    <select id="input-mascota" name="codigo_mascota" onchange="actualizarDuenoAutomatico()" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; background-color: white;" required>
-    <option value="" disabled selected>Selecciona una mascota de la lista...</option>
-    {% for mascota in lista_mascotas %}
-        <option value="{{ mascota[0] }}" data-dueno="Sin Dueño Asignado">{{ mascota[1] }} (ID: {{ mascota[0] }})</option>
-    {% endfor %}
-</select>
-</div>
-
-<div class="form-list-group">
-    <label>4. Nombre del Dueño</label>
-    <input type="text" id="input-dueno" name="nombre_dueno" placeholder="Se asignará automáticamente al elegir la mascota" readonly style="background-color: #f7fafc; cursor: not-allowed; width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
-</div>
-            
-            <div class="form-list-group">
-                <label>5. Motivo de Consulta</label>
-                <input type="text" id="input-motivo" name="motivo" placeholder="Ej. Vacunación Anual o Limpieza" required>
-            </div>
-            
-            <div class="form-list-group">
-                <label>6. Estado Inicial</label>
-                <select id="input-estado" name="estado">
-                    <option value="Pendiente" selected>Pendiente</option>
-                    <option value="Completada">Completada</option>
-                    <option value="Cancelada">Cancelada</option>
-                </select>
-            </div>
-            
-            <button type="submit" class="btn-guardar-cita">Añadir a la Tabla</button>
-        </form>
-    </div>
-</div>
-
-<div id="modalConfirmarEliminar" class="modal-overlay">
-    <div class="modal-confirm-box">
-        <div class="confirm-icon">⚠️</div>
-        <h2>¿Eliminar este registro?</h2>
-        <p>Esta acción removerá permanentemente la cita médica del listado actual de consultas.</p>
-        <div class="confirm-actions">
-            <button class="btn-confirm-cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
-            <button class="btn-confirm-aceptar" id="btn-aceptar-eliminar">Eliminar Cita</button>
-        </div>
-    </div>
-</div>
-
-</main>
-    <style> 
+    <style>
         * {
             box-sizing: border-box;
             margin: 0;
@@ -205,10 +15,11 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #f4f6f9; 
+            background-color: #f4f6f9;
             color: #333;
         }
 
+        /* --- NAVBAR --- */
         .navbar {
             background: #ffffff;
             padding: 14px 40px;
@@ -238,10 +49,7 @@
             font-size: 18px;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 10px;
-        }
+        .nav-links { display: flex; gap: 10px; }
 
         .nav-link {
             text-decoration: none;
@@ -258,6 +66,7 @@
             background: rgba(39, 32, 255, 0.08);
         }
 
+        /* --- LAYOUT PRINCIPAL --- */
         .portal-container {
             max-width: 1400px;
             margin: 40px auto;
@@ -271,19 +80,19 @@
             margin-bottom: 30px;
         }
 
-        .portal-header h1 {
-            font-weight: 900;
-            font-size: 28px;
-            margin-bottom: 5px;
+        .portal-header h1 { font-weight: 900; font-size: 28px; margin-bottom: 5px; }
+        .portal-header p  { color: #666; font-size: 15px; }
+
+        .portal-content {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+            align-items: start;
         }
 
-        .portal-header p {
-            color: #666;
-            font-size: 15px;
-        }
-
+        /* --- BOTÓN NUEVA CITA --- */
         .btn-nueva-cita {
-            background: #2720FF; 
+            background: #2720FF;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -294,41 +103,26 @@
             transition: background 0.2s;
         }
 
-        .btn-nueva-cita:hover {
-            background: #1c17c7;
-        }
+        .btn-nueva-cita:hover { background: #1c17c7; }
 
-           
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-        .portal-content {
-            display: grid;
-            grid-template-columns: 1fr 320px; 
-            gap: 30px;
-            align-items: start;
-        }
-
+        /* --- SECCIÓN TABLA --- */
         .excel-section {
             background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
             overflow: hidden;
             border: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         .search-container {
-            padding: 24px 24px 14px 24px; 
+            padding: 24px 24px 14px 24px;
             background-color: #ffffff;
         }
 
         .search-box-wrapper {
             position: relative;
             width: 100%;
-            max-width: 420px; 
+            max-width: 420px;
         }
 
         .search-box-wrapper::before {
@@ -349,22 +143,20 @@
             font-size: 14px;
             font-weight: 600;
             color: #333;
-            background-color: #f8f9fa; 
+            background-color: #f8f9fa;
             border: 2px solid #edf2f7;
-            border-radius: 50px; 
+            border-radius: 50px;
             outline: none;
             transition: all 0.2s ease;
         }
 
         #buscador-citas:focus {
             background-color: #ffffff;
-            border-color: #2720FF; 
+            border-color: #2720FF;
             box-shadow: 0 4px 12px rgba(39, 32, 255, 0.06);
         }
 
-        .table-responsive {
-            overflow-x: auto;
-        }
+        .table-responsive { overflow-x: auto; }
 
         .excel-table {
             width: 100%;
@@ -409,9 +201,8 @@
             transition: all 0.15s ease;
         }
 
-        .btn-editar-fila { color: #2720FF; border-color: rgba(39, 32, 255, 0.2); }
-        .btn-editar-fila:hover { background-color: #2720FF; color: white; }
-
+        .btn-editar-fila  { color: #2720FF; border-color: rgba(39, 32, 255, 0.2); }
+        .btn-editar-fila:hover  { background-color: #2720FF; color: white; }
         .btn-eliminar-fila { color: #e63946; border-color: rgba(230, 57, 70, 0.2); }
         .btn-eliminar-fila:hover { background-color: #e63946; color: white; }
 
@@ -425,7 +216,7 @@
             outline: none;
         }
 
-        /* BADGES REDISEÑADOS COMO BOTONES INTERACTIVOS LIMPIOS */
+        /* --- BADGES --- */
         .badge {
             padding: 8px 16px;
             border-radius: 50px;
@@ -438,14 +229,12 @@
             min-width: 100px;
             transition: transform 0.1s ease, box-shadow 0.2s ease;
         }
-        
-        .badge:active {
-            transform: scale(0.95);
-        }
 
-        .badge-pendiente { 
-            background-color: #fff8e1; 
-            color: #f5b041; 
+        .badge:active { transform: scale(0.95); }
+
+        .badge-pendiente {
+            background-color: #fff8e1;
+            color: #f5b041;
             border: 1px solid rgba(245, 176, 65, 0.3);
         }
         .badge-pendiente:hover {
@@ -454,9 +243,9 @@
             box-shadow: 0 4px 10px rgba(245, 176, 65, 0.2);
         }
 
-        .badge-hecha { 
-            background-color: #e8f8f5; 
-            color: #2ec4b6; 
+        .badge-hecha {
+            background-color: #e8f8f5;
+            color: #2ec4b6;
             border: 1px solid rgba(46, 196, 182, 0.3);
         }
         .badge-hecha:hover {
@@ -465,6 +254,7 @@
             box-shadow: 0 4px 10px rgba(46, 196, 182, 0.2);
         }
 
+        /* --- SIDEBAR --- */
         .filter-card {
             background: #ffffff;
             border-radius: 16px;
@@ -473,8 +263,8 @@
             border: 1px solid rgba(0, 0, 0, 0.04);
         }
 
-        .filter-card h3 { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
-        .filter-desc { font-size: 13px; color: #777; margin-bottom: 20px; line-height: 1.4; }
+        .filter-card h3  { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+        .filter-desc     { font-size: 13px; color: #777; margin-bottom: 20px; line-height: 1.4; }
 
         .status-box {
             display: flex;
@@ -487,16 +277,15 @@
             border: 1px solid #edf2f7;
         }
 
-        .status-info { display: flex; flex-direction: column; }
-        .status-title { font-size: 13px; font-weight: 600; color: #666; }
-        .status-count { font-size: 24px; font-weight: 900; color: #111; margin-top: 2px; }
+        .status-info    { display: flex; flex-direction: column; }
+        .status-title   { font-size: 13px; font-weight: 600; color: #666; }
+        .status-count   { font-size: 24px; font-weight: 900; color: #111; margin-top: 2px; }
         .status-indicator { width: 6px; height: 35px; border-radius: 10px; }
-        
         .indicator-pendiente { background-color: #f5b041; }
-        .indicator-hecha { background-color: #2ec4b6; }
+        .indicator-hecha     { background-color: #2ec4b6; }
 
         .select-container { display: flex; flex-direction: column; gap: 6px; margin-top: 20px; }
-        .select-label { font-size: 12px; font-weight: 700; color: #777; text-transform: uppercase; }
+        .select-label     { font-size: 12px; font-weight: 700; color: #777; text-transform: uppercase; }
 
         .mini-barra-select {
             width: 100%;
@@ -512,21 +301,23 @@
             outline: none;
         }
 
-        /* MODALES */
+        /* --- MODALES --- */
         .modal-overlay {
-            display: none; 
+            display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); 
+            background-color: rgba(0, 0, 0, 0.4);
             z-index: 1000;
-            align-items: center; justify-content: center;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content-box {
             background-color: #ffffff;
             padding: 30px;
             border-radius: 16px;
-            width: 100%; max-width: 480px;
+            width: 100%;
+            max-width: 480px;
             position: relative;
         }
 
@@ -543,368 +334,383 @@
 
         @keyframes aparecerModal {
             from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            to   { transform: scale(1);    opacity: 1; }
         }
 
         .confirm-icon { font-size: 36px; margin-bottom: 14px; }
         .modal-confirm-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 10px; color: #111; }
-        .modal-confirm-box p { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 24px; }
+        .modal-confirm-box p  { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 24px; }
 
         .confirm-actions { display: flex; gap: 12px; justify-content: center; }
 
         .btn-confirm-cancelar, .btn-confirm-aceptar {
-            padding: 10px 20px; font-family: 'Nunito', sans-serif;
-            font-size: 14px; font-weight: 700; border: none;
-            border-radius: 8px; cursor: pointer; flex: 1; transition: background 0.2s;
+            padding: 10px 20px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+            transition: background 0.2s;
         }
 
         .btn-confirm-cancelar { background-color: #edf2f7; color: #4a5568; }
         .btn-confirm-cancelar:hover { background-color: #e2e8f0; }
-
-        .btn-confirm-aceptar { background-color: #e63946; color: white; }
-        .btn-confirm-aceptar:hover { background-color: #c92a36; }
+        .btn-confirm-aceptar  { background-color: #e63946; color: white; }
+        .btn-confirm-aceptar:hover  { background-color: #c92a36; }
 
         .btn-cerrar-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: #aaa; }
+
         .form-list-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .form-list-group label { font-size: 13px; font-weight: 700; color: #444; }
-        
-        .form-list-group input, .form-list-group select {
-            padding: 10px 12px; font-family: 'Nunito', sans-serif;
-            font-size: 14px; border: 2px solid #edf2f7; border-radius: 8px; outline: none;
+        .form-list-group input,
+        .form-list-group select {
+            padding: 10px 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            border: 2px solid #edf2f7;
+            border-radius: 8px;
+            outline: none;
         }
+
+        .modal-subtitle { font-size: 14px; color: #666; margin-bottom: 20px; }
 
         .btn-guardar-cita {
-            width: 100%; background: #2720FF; color: white; border: none;
-            padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer;
+            width: 100%;
+            background: #2720FF;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
             font-family: 'Nunito', sans-serif;
         }
-
-
 
         @media (max-width: 992px) {
             .portal-content { grid-template-columns: 1fr; }
         }
     </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <div class="nav-icon">V</div>
+                <span>VetConnect Panel</span>
+            </div>
+            <div class="nav-links" style="margin-left: auto;">
+                <a href="{{ url_for('citas_veterinario') }}" class="nav-link active">Citas</a>
+                <a href="{{ url_for('citas_paciente') }}" class="nav-link">Pacientes</a>
+                <a href="#" class="nav-link">Mi Perfil</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="portal-container">
+
+        <header class="portal-header">
+            <div>
+                <h1>Panel de Control de Citas</h1>
+                <p>Gestiona los horarios, pacientes y estados de tus consultas médicas.</p>
+            </div>
+            <button class="btn-nueva-cita" onclick="abrirModal()">+ Nueva Cita</button>
+         
+        </header>
+
+        <div class="portal-content">
+
+            <!-- TABLA DE CITAS -->
+            <section class="excel-section">
+                <div class="search-container">
+                    <div class="search-box-wrapper">
+                        <input
+                            type="text"
+                            id="buscador-citas"
+                            placeholder="Buscar por paciente, dueño o motivo de consulta..."
+                        >
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="excel-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Paciente / Mascota</th>
+                                <th>Dueño</th>
+                                <th>Motivo de Consulta</th>
+                                <th>Estado (Toca para cambiar)</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-citas-body">
+                            {% if citas %}
+                                {% for cita in citas %}
+                                    {% set estado = cita[6] %}
+                                    {% set clase_badge = 'badge-hecha' if estado == 'Hecha' else 'badge-pendiente' %}
+                                    <tr>
+                                        <td>{{ cita[0] }}</td>
+                                        <td class="edit-fecha">{{ cita[1] }}</td>
+                                        <td class="edit-hora">{{ cita[2] }}</td>
+                                        <td class="edit-mascota">{{ cita[3] }}</td>
+                                        <td class="edit-dueno">{{ cita[4] }}</td>
+                                        <td class="edit-motivo">{{ cita[5] }}</td>
+                                        <td class="celda-estado">
+                                            <span class="badge {{ clase_badge }}" onclick="alternarEstadoDirecto(this, '{{ cita[0] }}')">
+                                                {{ estado }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="actions-wrapper">
+                                                <button class="btn-editar-fila"   onclick="editarFila(this)">Editar</button>
+                                                <button class="btn-eliminar-fila" onclick="abrirModalEliminar(this)">Eliminar</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr class="sin-datos-row">
+                                    <td colspan="8" style="text-align:center; color:#999; padding:40px; font-style:italic;">
+                                        No hay citas registradas en este momento.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SIDEBAR ESTADÍSTICAS -->
+            <aside class="sidebar-section">
+                <div class="filter-card">
+                    <h3>Resumen de Estados</h3>
+                    <p class="filter-desc">Filtra o revisa las consultas delimitadas por su progreso actual.</p>
+
+                    <div class="status-box">
+                        <div class="status-info">
+                            <span class="status-title">Citas Pendientes</span>
+                            <h3>{{ num_p }}</h3>
+                        </div>
+                        <div class="status-indicator indicator-pendiente"></div>
+                    </div>
+
+                    <div class="status-box">
+                        <div class="status-info">
+                            <span class="status-title">Citas Hechas</span>
+                            <h3>{{ num_h }}</h3>
+                        </div>
+                        <div class="status-indicator indicator-hecha"></div>
+                    </div>
+
+                    <div class="select-container">
+                        <label for="filtro-citas" class="select-label">Filtrar por:</label>
+                        <select id="filtro-citas" class="mini-barra-select" onchange="filtrarPorEstado()">
+                            <option value="todas">Ver Todas</option>
+                            <option value="Pendiente">Solo Pendientes</option>
+                            <option value="Hecha">Solo Hechas</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+
+        <!-- ===== MODAL NUEVA CITA ===== -->
+        <div id="modalCita" class="modal-overlay">
+            <div class="modal-content-box">
+                <span class="btn-cerrar-modal" onclick="cerrarModal()">&times;</span>
+                <h2>Registrar Nueva Cita</h2>
+                <p class="modal-subtitle">Por favor rellene el formulario basado en el índice de la tabla:</p>
+
+                <form id="form-nueva-cita" action="/guardar-cita" method="POST">
+                    <div class="form-list-group">
+                        <label>1. Fecha de Consulta</label>
+                        <input type="date" id="input-fecha" name="fecha_cita" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>2. Hora de Cita</label>
+                        <input type="time" id="input-hora" name="hora_cita" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>3. Seleccionar Paciente / Mascota</label>
+                        <select id="input-mascota" name="codigo_mascota" onchange="actualizarDuenoAutomatico()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; font-size:14px; background-color:white;" required>
+                            <option value="" disabled selected>Selecciona una mascota de la lista...</option>
+                            {% for mascota in lista_mascotas %}
+                                <option value="{{ mascota[0] }}" data-dueno="{{ mascota[2] }}">{{ mascota[1] }} (ID: {{ mascota[0] }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-list-group">
+                        <label>4. Nombre del Dueño</label>
+                        <input type="text" id="input-dueno" name="nombre_dueno" placeholder="Se asignará automáticamente al elegir la mascota" readonly style="background-color:#f7fafc; cursor:not-allowed; width:100%; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                    </div>
+                    <div class="form-list-group">
+                        <label>5. Motivo de Consulta</label>
+                        <input type="text" id="input-motivo" name="motivo" placeholder="Ej. Vacunación Anual o Limpieza" required>
+                    </div>
+                    <div class="form-list-group">
+                        <label>6. Estado Inicial</label>
+                        <select id="input-estado" name="estado">
+                            <option value="Pendiente" selected>Pendiente</option>
+                            <option value="Completada">Completada</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-guardar-cita">Añadir a la Tabla</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ===== MODAL CONFIRMAR ELIMINAR ===== -->
+        <div id="modalConfirmarEliminar" class="modal-overlay">
+            <div class="modal-confirm-box">
+                <div class="confirm-icon"></div>
+                <h2>¿Eliminar este registro?</h2>
+                <p>Esta acción removerá permanentemente la cita médica del listado actual de consultas.</p>
+                <div class="confirm-actions">
+                    <button class="btn-confirm-cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
+                    <button class="btn-confirm-aceptar" id="btn-aceptar-eliminar">Eliminar Cita</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
 
     <script>
-        let proximoId = 1; 
-        let filaPorEliminar = null; 
+        let filaPorEliminar = null;
 
-        function abrirModal() {
-            document.getElementById('modalCita').style.display = 'flex';
-        }
-
-        function cerrarModal() {
-            document.getElementById('modalCita').style.display = 'none';
-        }
+        // ----- MODALES -----
+        function abrirModal()         { document.getElementById('modalCita').style.display = 'flex'; }
+        function cerrarModal()        { document.getElementById('modalCita').style.display = 'none'; }
+        function cerrarModalEliminar(){ document.getElementById('modalConfirmarEliminar').style.display = 'none'; filaPorEliminar = null; }
 
         function abrirModalEliminar(boton) {
-            filaPorEliminar = boton.closest('tr'); 
+            filaPorEliminar = boton.closest('tr');
             document.getElementById('modalConfirmarEliminar').style.display = 'flex';
         }
 
-        function cerrarModalEliminar() {
-            document.getElementById('modalConfirmarEliminar').style.display = 'none';
-            filaPorEliminar = null;
-        }
-
-        function formatearHora12(horaRaw) {
-            if (!horaRaw) return "";
-            if (horaRaw.includes('AM') || horaRaw.includes('PM')) return horaRaw;
-            
-            const partesHora = horaRaw.split(':');
-            let horas = parseInt(partesHora[0], 10);
-            const minutos = partesHora[1];
-            const ampm = horas >= 12 ? 'PM' : 'AM';
-            
-            horas = horas % 12;
-            horas = horas ? horas : 12; 
-            return `${horas.toString().padStart(2, '0')}:${minutos} ${ampm}`;
-        }
+        // ----- ELIMINAR FILA -----
+        document.getElementById('btn-aceptar-eliminar').addEventListener('click', function () {
+            if (filaPorEliminar) {
+                filaPorEliminar.remove();
+                verificarTablaVacia();
+                cerrarModalEliminar();
+            }
+        });
 
         function verificarTablaVacia() {
             const tablaBody = document.getElementById('tabla-citas-body');
-            const filas = tablaBody.querySelectorAll('tr:not(.sin-datos-row)');
-            
-            if (filas.length === 0) {
+            if (tablaBody.querySelectorAll('tr:not(.sin-datos-row)').length === 0) {
                 tablaBody.innerHTML = `
                     <tr class="sin-datos-row">
-                        <td colspan="8" style="text-align: center; color: #999; padding: 40px; font-style: italic;">
-                            No hay citas registradas en este momento. Las nuevas citas aparecerán aquí dinámicamente.
+                        <td colspan="8" style="text-align:center; color:#999; padding:40px; font-style:italic;">
+                            No hay citas registradas en este momento.
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             }
         }
 
-        function actualizarContadoresCitas() {
-            const tablaBody = document.getElementById('tabla-citas-body');
-            if (!tablaBody || tablaBody.querySelector('.sin-datos-row')) {
-                document.getElementById('contador-pendientes').textContent = '0';
-                document.getElementById('contador-hechas').textContent = '0';
-                return;
-            }
-
-            const filas = tablaBody.querySelectorAll('tr');
-            let pendientes = 0;
-            let hechas = 0;
-
-            filas.forEach(fila => {
-                const badge = fila.querySelector('.badge');
-                if (badge) {
-                    const texto = badge.textContent.trim().toLowerCase();
-                    if (texto === 'pendiente') pendientes++;
-                    if (texto === 'hecha') hechas++;
-                }
-            });
-
-            document.getElementById('contador-pendientes').textContent = pendientes;
-            document.getElementById('contador-hechas').textContent = hechas;
-        }
-
-        // FUNCIÓN CLAVE: INTERCAMBIA EL ESTADO DIRECTAMENTE AL CLICKEAR EL BADGE
-        function alternarEstadoDirecto(badgeElement) {
-            const estadoActual = badgeElement.textContent.trim();
-            
-            if (estadoActual === 'Pendiente') {
-                badgeElement.textContent = 'Hecha';
-                badgeElement.className = 'badge badge-hecha';
-            } else {
-                badgeElement.textContent = 'Pendiente';
-                badgeElement.className = 'badge badge-pendiente';
-            }
-            
-            actualizarContadoresCitas();
-            
-            // Si hay un filtro de estado activo en el panel lateral, re-aplicar filtro inmediatamente
-            filtrarPorEstado();
-        }
-
-        function agregarCitaManual(event) {
-            event.preventDefault(); 
-
-            const tablaBody = document.getElementById('tabla-citas-body');
-            const filaSinDatos = tablaBody.querySelector('.sin-datos-row');
-            if (filaSinDatos) filaSinDatos.remove();
-
-            const fecha = document.getElementById('input-fecha').value;
-            const horaRaw = document.getElementById('input-hora').value; 
-            const mascota = document.getElementById('input-mascota').value;
-            const dueno = document.getElementById('input-dueno').value;
-            const motivo = document.getElementById('input-motivo').value;
-            const estado = document.getElementById('input-estado').value;
-
-            const horaFormateada = formatearHora12(horaRaw);
-            const fechaFormateada = fecha.split('-').reverse().join('/');
-            const claseBadge = estado === 'Pendiente' ? 'badge-pendiente' : 'badge-hecha';
-
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.innerHTML = `
-                <td>#${proximoId}</td>
-                <td class="edit-fecha">${fechaFormateada}</td>
-                <td class="edit-hora">${horaFormateada}</td>
-                <td class="edit-mascota">${mascota}</td>
-                <td class="edit-dueno">${dueno}</td>
-                <td class="edit-motivo">${motivo}</td>
-                <td class="celda-estado">
-                    <span class="badge ${claseBadge}" onclick="alternarEstadoDirecto(this)">${estado}</span>
-                </td>
-                <td>
-                    <div class="actions-wrapper">
-                        <button class="btn-editar-fila" onclick="editarFila(this)"> Editar</button>
-                        <button class="btn-eliminar-fila" onclick="abrirModalEliminar(this)"> Eliminar</button>
-                    </div>
-                </td>
-            `;
-
-            tablaBody.appendChild(nuevaFila);
-            proximoId++;
-
-            cerrarModal(); 
-            actualizarContadoresCitas();
-            document.getElementById('form-nueva-cita').reset(); 
-        }
-
+        // ----- EDITAR FILA EN LÍNEA -----
         function editarFila(boton) {
             const fila = boton.closest('tr');
-            if (boton.textContent.includes('Guardar')) return;
-
-            const celdaFecha = fila.querySelector('.edit-fecha');
-            const celdaHora = fila.querySelector('.edit-hora');
-            const celdaMascota = fila.querySelector('.edit-mascota');
-            const celdaDueno = fila.querySelector('.edit-dueno');
-            const celdaMotivo = fila.querySelector('.edit-motivo');
-
-            celdaFecha.innerHTML = `<input type="text" class="table-inline-input" value="${celdaFecha.textContent.trim()}">`;
-            celdaHora.innerHTML = `<input type="text" class="table-inline-input" value="${celdaHora.textContent.trim()}">`;
-            celdaMascota.innerHTML = `<input type="text" class="table-inline-input" value="${celdaMascota.textContent.trim()}">`;
-            celdaDueno.innerHTML = `<input type="text" class="table-inline-input" value="${celdaDueno.textContent.trim()}">`;
-            celdaMotivo.innerHTML = `<input type="text" class="table-inline-input" value="${celdaMotivo.textContent.trim()}">`;
-
-            boton.textContent = " Guardar";
-            boton.style.backgroundColor = "#2720FF";
-            boton.style.color = "white";
-            boton.setAttribute("onclick", "guardarFila(this)");
+            const celdas = ['edit-fecha','edit-hora','edit-mascota','edit-dueno','edit-motivo'];
+            celdas.forEach(cls => {
+                const celda = fila.querySelector('.' + cls);
+                celda.innerHTML = `<input type="text" class="table-inline-input" value="${celda.textContent.trim()}">`;
+            });
+            boton.textContent = 'Guardar';
+            boton.style.backgroundColor = '#2720FF';
+            boton.style.color = 'white';
+            boton.setAttribute('onclick', 'guardarFila(this)');
         }
 
         function guardarFila(boton) {
             const fila = boton.closest('tr');
-
-            const celdaFecha = fila.querySelector('.edit-fecha');
-            const celdaHora = fila.querySelector('.edit-hora');
-            const celdaMascota = fila.querySelector('.edit-mascota');
-            const celdaDueno = fila.querySelector('.edit-dueno');
-            const celdaMotivo = fila.querySelector('.edit-motivo');
-
-            const nuevaFecha = celdaFecha.querySelector('input').value;
-            const nuevaHora = celdaHora.querySelector('input').value;
-            const nuevaMascota = celdaMascota.querySelector('input').value;
-            const nuevoDueno = celdaDueno.querySelector('input').value;
-            const nuevoMotivo = celdaMotivo.querySelector('input').value;
-
-            celdaFecha.textContent = nuevaFecha;
-            celdaHora.textContent = nuevaHora; 
-            celdaMascota.textContent = nuevaMascota;
-            celdaDueno.textContent = nuevoDueno;
-            celdaMotivo.textContent = nuevoMotivo;
-
-            boton.textContent = " Editar";
-            boton.style.backgroundColor = "#f8f9fa";
-            boton.style.color = "#2720FF";
-            boton.setAttribute("onclick", "editarFila(this)");
-        }
-
-        document.getElementById('btn-aceptar-eliminar').addEventListener('click', function() {
-            if (filaPorEliminar) {
-                filaPorEliminar.remove(); 
-                actualizarContadoresCitas(); 
-                verificarTablaVacia(); 
-                cerrarModalEliminar(); 
-            }
-        });
-
-        function filtrarTablaCitas() {
-            const textoBuscado = document.getElementById('buscador-citas').value.toLowerCase();
-            const filas = document.querySelectorAll('#tabla-citas-body tr:not(.sin-datos-row)');
-
-            filas.forEach(fila => {
-                const textoFila = fila.textContent.toLowerCase();
-                if (textoFila.includes(textoBuscado)) {
-                    fila.style.display = '';
-                } else {
-                    fila.style.display = 'none';
-                }
+            const celdas = ['edit-fecha','edit-hora','edit-mascota','edit-dueno','edit-motivo'];
+            celdas.forEach(cls => {
+                const celda = fila.querySelector('.' + cls);
+                celda.textContent = celda.querySelector('input').value;
             });
+            boton.textContent = 'Editar';
+            boton.style.backgroundColor = '#f8f9fa';
+            boton.style.color = '#2720FF';
+            boton.setAttribute('onclick', 'editarFila(this)');
         }
 
+        // ----- ALTERNAR ESTADO (FLASK + SQL SERVER) -----
+        function alternarEstadoDirecto(badgeElement, idCita) {
+            const estadoActual = badgeElement.textContent.trim();
+            const nuevoEstado  = estadoActual === 'Pendiente' ? 'Hecha' : 'Pendiente';
+
+            fetch('/actualizar-estado-cita', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_cita: idCita, estado: nuevoEstado })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.reload();
+                } else {
+                    alert('Error al guardar: ' + data.message);
+                }
+            })
+            .catch(() => alert('No se pudo conectar con el servidor.'));
+        }
+
+        // ----- FILTRAR POR ESTADO (SIDEBAR) -----
         function filtrarPorEstado() {
             const seleccion = document.getElementById('filtro-citas').value;
-            const filas = document.querySelectorAll('#tabla-citas-body tr:not(.sin-datos-row)');
-
-            filas.forEach(fila => {
+            document.querySelectorAll('#tabla-citas-body tr:not(.sin-datos-row)').forEach(fila => {
                 const badge = fila.querySelector('.badge');
                 if (!badge) return;
-                const estadoCita = badge.textContent.trim();
+                fila.style.display = (seleccion === 'todas' || badge.textContent.trim() === seleccion) ? '' : 'none';
+            });
+        }
 
-                if (seleccion === 'todas' || estadoCita === seleccion) {
+        
+        function actualizarDuenoAutomatico() {
+            const selector = document.getElementById('input-mascota');
+            const opcion   = selector.options[selector.selectedIndex];
+            document.getElementById('input-dueno').value = opcion.getAttribute('data-dueno') || '';
+        }
+
+      // ----- BUSCADOR EN TIEMPO REAL INTEGRAL -----
+document.addEventListener('DOMContentLoaded', function () {
+    const inputBuscador = document.getElementById('buscador-citas') || document.getElementById('buscar-cita');
+    
+    if (inputBuscador) {
+        inputBuscador.addEventListener('input', function () {
+            const texto = this.value.toLowerCase().trim();
+            
+            document.querySelectorAll('#tabla-citas-body tr:not(.sin-datos-row)').forEach(fila => {
+                //  Busca directamente por la clase de la celda.
+                const celdaMascota = fila.querySelector('.edit-mascota');
+                const celdaDueno   = fila.querySelector('.edit-dueno');
+                const celdaMotivo  = fila.querySelector('.edit-motivo');
+
+                const mascota = celdaMascota ? celdaMascota.textContent.toLowerCase() : '';
+                const dueno   = celdaDueno   ? celdaDueno.textContent.toLowerCase() : '';
+                const motivo  = celdaMotivo  ? celdaMotivo.textContent.toLowerCase() : '';
+                
+                // Si el texto coincide con cualquiera de los tres campos, muestra la fila
+                if (mascota.includes(texto) || dueno.includes(texto) || motivo.includes(texto)) {
                     fila.style.display = '';
                 } else {
                     fila.style.display = 'none';
                 }
             });
-        }
-
- function actualizarDuenoAutomatico() {
-    const selectorMascota = document.getElementById('input-mascota');
-    const inputDueno = document.getElementById('input-dueno');
-    
-    // Obtiene la opción seleccionada
-    const opcionSeleccionada = selectorMascota.options[selectorMascota.selectedIndex];
-    
-    // Extrae el dueño guardado en 'data-dueno'
-    const nombreDueno = opcionSeleccionada.getAttribute('data-dueno');
-    
-    // Lo pone en el cuadro de texto
-    if (nombreDueno) {
-        inputDueno.value = nombreDueno;
-    } else {
-        inputDueno.value = "";
-    }
-
-}
-
-// 🔍 SISTEMA DE BÚSQUEDA EN TIEMPO REAL
-document.addEventListener("DOMContentLoaded", function () {
-    const inputBuscar = document.querySelector('input[placeholder*="Buscar por"]');
-    
-    if (inputBuscar) {
-        inputBuscar.addEventListener("input", function () {
-            const textoBusqueda = this.value.toLowerCase().trim();
-            // Selecciona todas las filas de datos de la tabla (omitiendo el encabezado)
-            const filasTabla = document.querySelectorAll("table tbody tr");
-
-            filasTabla.forEach(fila => {
-                // Capturamos las celdas clave de la tabla basándonos en tu diseño actual:
-                // Celda 3: Mascota | Celda 4: Dueño | Celda 5: Motivo de consulta
-                const celdaMascota = fila.cells[3] ? fila.cells[3].textContent.toLowerCase() : "";
-                const celdaDueno   = fila.cells[4] ? fila.cells[4].textContent.toLowerCase() : "";
-                const celdaMotivo  = fila.cells[5] ? fila.cells[5].textContent.toLowerCase() : "";
-
-                // Si lo que escribió el usuario coincide con alguno de estos tres campos...
-                if (
-                    celdaMascota.includes(textoBusqueda) || 
-                    celdaDueno.includes(textoBusqueda) || 
-                    celdaMotivo.includes(textoBusqueda)
-                ) {
-                    fila.style.display = ""; // 👁️ Muestra la fila
-                } else {
-                    fila.style.display = "none"; // 🥷 Oculta la fila
-                }
-            });
         });
-        console.log(" ¡Buscador en tiempo real vinculado y listo!");
-    } else {
-        console.error(" No se encontró el campo input de búsqueda en el HTML.");
-    }
-});
-
-// ORDENAMIENTO AUTOMÁTICO POR ID AL CARGAR LA PÁGINA
-document.addEventListener("DOMContentLoaded", function () {
-    try {
-        // Buscamos la tabla de citas. Si tu tabla no tiene id="miTabla", 
-        // este selector buscará la primera tabla que encuentre en la página.
-        const tabla = document.getElementById("miTabla") || document.querySelector("table");
-        if (!tabla) return;
-
-        const tbody = tabla.tBodies[0];
-        if (!tbody) return;
-
-        const filas = Array.from(tbody.rows);
-
-        // Ordenamos de Mayor a Menor (Descendente) por la columna 0 (ID)
-        filas.sort((a, b) => {
-            const cellA = a.cells[0] ? a.cells[0].innerText.trim() : "0";
-            const cellB = b.cells[0] ? b.cells[0].innerText.trim() : "0";
-
-            const numA = parseFloat(cellA);
-            const numB = parseFloat(cellB);
-
-            // Si ambos son números (como tus IDs 1015, 50, 49...)
-    if (!isNaN(numA) && !isNaN(numB)) {
-    return numA - numB; // 🌟 Volteamos la resta aquí
-} else {
-    return cellA.localeCompare(cellB); // 🌟 Volteamos el orden de texto aquí
-}
-        });
-
-        // Volvemos a meter las filas ya ordenadas en la tabla
-        filas.forEach(row => tbody.appendChild(row));
-        console.log(" ¡Tabla ordenada por ID de forma descendente en el navegador!");
-
-    } catch (err) {
-        console.error("Error al ordenar la tabla automáticamente:", err);
     }
 });
     </script>
+
 </body>
 </html>
